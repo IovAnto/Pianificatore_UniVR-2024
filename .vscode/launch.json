@@ -1,19 +1,20 @@
 {
-    "configurations": [
-      {
-        "name": "compila e runna sta shit",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${fileDirname}/${fileBasenameNoExtension}",
-        "args": [],
-        "stopAtEntry": false,
-        "cwd": "${fileDirname}",
-        "environment": [],
-        "externalConsole": true,
-        "MIMode": "lldb",
-        "preLaunchTask": "C/C++: clang++ build active file",
-        "console": "integratedTerminal"
-      }
-    ],
-    "version": "2.0.0"
-  }
+  "configurations": [
+    
+    {
+      "name": "compila e runna",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${fileDirname}/${fileBasenameNoExtension}",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "lldb",
+      "preLaunchTask": "C/C++: clang++ build active file",
+      "console": "integratedTerminal"
+    }
+  ],
+  "version": "2.0.0"
+}

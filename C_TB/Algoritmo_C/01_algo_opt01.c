@@ -26,8 +26,8 @@ int main()
     int scelta;
 
     printf("Scegli l'ordinamento:\n");
-    printf("0 - EDF\n");
-    printf("1 - HPF\n");
+    printf("0 - EDF (Earliest deadline first) \n");
+    printf("1 - HPF (Highest priority first) \n");
     scanf("%d", &scelta);
 
 
@@ -49,8 +49,13 @@ int main()
         // conto le RIGHE del file -> nProd
         int linecounter = 0;
         char temp;
+        Prodotto ArrayProd[100];
+        int i = 0;
         while (!feof(file))
         {
+
+            fscanf(file, "%d,%d,%d,%d", &ArrayProd[i].id, &ArrayProd[i].durata, &ArrayProd[i].scadenza, &ArrayProd[i].priorità);
+            ++i;
             temp = fgetc(file);
             if (temp == '\n')
             {
@@ -58,30 +63,18 @@ int main()
             }
         }
 
-        int nProd = linecounter;
-
-    // acquisisco i dati del file (esculdendo il carattere ',') e store in array di struct
-    Prodotto ArrayProd[nProd];
-
-        rewind(file); //riporto il puntatore del file all'inizio
-
-    for (int i = 0; i < nProd; i++)
-    {
-        fscanf(file, "%d,%d,%d,%d\n", &ArrayProd[i].id, &ArrayProd[i].durata, &ArrayProd[i].scadenza, &ArrayProd[i].priorità);
-    }
-
     // 03 ordinamento -----------------------------------------
     
     if (scelta == 0) {
-        OrdinaEDF(ArrayProd, nProd);
+        OrdinaEDF(ArrayProd, linecounter);
         } 
     else if (scelta == 1){
-        OrdinaHPF(ArrayProd, nProd);
+        OrdinaHPF(ArrayProd, linecounter);
         }
 
     // stampa dell'array di struct prodotto in maniera ordinata secondo ordinamento:
     printf("ID\tDurata\tScadenza\tPriorità\n");
-    for (int i = 0; i < nProd; i++)
+    for (int i = 0; i < linecounter; i++)
     {
         printf("%d\t%d\t%d\t\t%d\n", ArrayProd[i].id, ArrayProd[i].durata, ArrayProd[i].scadenza, ArrayProd[i].priorità);
     }
@@ -92,15 +85,25 @@ int main()
     FILE *file2;
     file2 = fopen("output.txt", "w");
     fprintf(file2, "ID\tDurata\tScadenza\tPriorità\n");
-    for (int i = 0; i < nProd; i++)
+    for (int i = 0; i < linecounter; i++)
     {
         fprintf(file2, "%d\t%d\t%d\t%d\n", ArrayProd[i].id, ArrayProd[i].durata, ArrayProd[i].scadenza, ArrayProd[i].priorità);
     }
+    // 0x chiusura dei filesss ----------------------------------
     fclose(file2);
-
-    
-    // 0x chiusura del file ----------------------------------
     fclose(file);
+
+    // visualizzo previsione linea di produzione ed eventuali penlities
+    int penalty_total = 0;
+    int timeSlot_enlapsed = 0;
+
+    for (int k = 0; k < linecounter; k++){
+        timeSlot_enlapsed += ArrayProd[k].durata;
+        if (timeSlot_enlapsed > ArrayProd[k].scadenza){
+            penalty_total += (timeSlot_enlapsed - ArrayProd[k].scadenza)*ArrayProd[k].priorità;
+        }
+    printf("%d\tID produzione: %d\tTTrascorso: %d\tScadenza: %d \tPenalty: %d\n", k, ArrayProd[k].id, timeSlot_enlapsed, ArrayProd[k].scadenza, penalty_total);
+    }
 
     return 0;
 }
