@@ -35,12 +35,25 @@ int main()
 
     // 02 lettura dati -----------------------------------------
 
+        // conto le RIGHE del file -> nProd
         int nProd = 0;
-        while (feof(file) == 0)
+        char temp;
+        while (!feof(file))
         {
-            fscanf(file, "%d %d %d %d", &ArrayProd[nProd].id, &ArrayProd[nProd].durata, &ArrayProd[nProd].scadenza, &ArrayProd[nProd].priorità);
-            nProd++;
+            temp = fgetc(file);
+            if (temp == '\n')
+            {
+                nProd++;
+            }
         }
+
+        // acquisisco i dati del file (esculdendo il carattere ',')
+        rewind(file);
+        for (int i = 0; i < nProd; i++)
+        {
+            fscanf(file, "%d,%d,%d,%d\n", &ArrayProd[i].id, &ArrayProd[i].durata, &ArrayProd[i].scadenza, &ArrayProd[i].priorità);
+        }
+
 
     // stampa dell'array di struct prodotto in maniera ordinata:
     printf("ID\tDurata\tScadenza\tPriorità\n");
