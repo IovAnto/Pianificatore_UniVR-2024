@@ -2,6 +2,8 @@
 triple:          'arm64-apple-darwin'
 binary-path:     '/Users/tbimbato/Documents/GitHub/Elaborato_Assembly2024/C_TB/Algoritmo_C/01_algo'
 relocations:
-  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x100003C30, symSize: 0x284 }
-  - { offsetInCU: 0x42, offset: 0x42, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x100003C30, symSize: 0x284 }
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x100003844, symSize: 0x414 }
+  - { offsetInCU: 0x42, offset: 0x42, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x100003844, symSize: 0x414 }
+  - { offsetInCU: 0x109, offset: 0x109, size: 0x8, addend: 0x0, symName: _OrdinaEDF, symObjAddr: 0x414, symBinAddr: 0x100003C58, symSize: 0x108 }
+  - { offsetInCU: 0x173, offset: 0x173, size: 0x8, addend: 0x0, symName: _OrdinaHPF, symObjAddr: 0x51C, symBinAddr: 0x100003D60, symSize: 0x108 }
 ...
