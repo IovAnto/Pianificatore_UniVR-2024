@@ -1,0 +1,9 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/tbimbato/Documents/GitHub/Elaborato_Assembly2024/C_TB/Algoritmo_C/01_algo_opt02_dynamic'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x1000034EC, symSize: 0x5DC }
+  - { offsetInCU: 0x42, offset: 0x42, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x1000034EC, symSize: 0x5DC }
+  - { offsetInCU: 0x13A, offset: 0x13A, size: 0x8, addend: 0x0, symName: _OrdinaEDF, symObjAddr: 0x5DC, symBinAddr: 0x100003AC8, symSize: 0x14C }
+  - { offsetInCU: 0x1B2, offset: 0x1B2, size: 0x8, addend: 0x0, symName: _OrdinaHPF, symObjAddr: 0x728, symBinAddr: 0x100003C14, symSize: 0x14C }
+...
