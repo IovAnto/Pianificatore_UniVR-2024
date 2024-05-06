@@ -81,8 +81,7 @@ read_loop:
     add ecx, 4  ; Passa al campo successivo
     inc ecx  ; Salta la virgola
     inc ecx  ; Passa al campo successivo
-    jmp read_loop
-read_done:
+wread_done:
 
     ; Chiude il file
     mov eax, 6
