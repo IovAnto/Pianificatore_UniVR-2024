@@ -14,8 +14,9 @@ typedef struct
 } Prodotto;
 
 // Prototipi delle funzioni
-void OrdinaEDF(Prodotto ArrayProd[], int nProd);
-void OrdinaHPF(Prodotto ArrayProd[], int nProd);
+void OrdinaEDF(Prodotto ArrayProd[], int nProd); //EDF - riordina array in ordine di scadenza
+void OrdinaHPF(Prodotto ArrayProd[], int nProd); //HPF - riodina array in priorità decrescente
+void StampaVideo(Prodotto ArrayProd[], int nProd, int scelta); // Stampa a video l'ordine dei prodotti secondo le specifiche
 
 int main()
 {
@@ -24,22 +25,23 @@ int main()
     char fileName[FNMAX];
     int scelta;
 
-    printf("Scegli l'ordinamento:\n0 - EDF (Earliest deadline first)\n1 - HPF (Highest priority first)\n");
-    scanf("%d", &scelta);
-
-    if (scelta != 0 && scelta != 1) {
-        printf("Opzione di ordinamento non valida\n");
-        return 1;
-    }
 
     // Apertura dati
-    printf("Inserisci il nome del file: ");
+    printf("Inserisci il nome del file: \t");
     scanf("%s", fileName);
     file = fopen(fileName, "r");
 
     if (file == NULL)
     {
-        printf("Errore nell'apertura del file\n");
+        printf("Errore nell'apertura del file\n\n\n");
+        return 1;
+    }
+
+    printf("Scegli l'ordinamento:\n0 - EDF (Earliest deadline first)\n1 - HPF (Highest priority first)\n\n");
+    scanf("%d", &scelta);
+
+    if (scelta != 0 && scelta != 1) {
+        printf("Opzione di ordinamento non valida\n");
         return 1;
     }
 
@@ -82,14 +84,11 @@ int main()
     else if (scelta == 1)
     {
         OrdinaHPF(ArrayProd, linecounter);
+    } else {
+        printf("Errore nella selezione dell'ordinamento\n");
+        return 1;
     }
 
-    // Stampa su console
-    printf("ID\tDurata\tScadenza\tPriorità\n");
-    for (int i = 0; i < linecounter; i++)
-    {
-        printf("%d\t%d\t%d\t\t%d\n", ArrayProd[i].id, ArrayProd[i].durata, ArrayProd[i].scadenza, ArrayProd[i].priorità);
-    }
 
     // Stampa su file
     FILE *file2;
@@ -106,28 +105,17 @@ int main()
     }
     fclose(file2);
 
-    // Visualizzazione previsione linea di produzione ed eventuali penalties
-    int penalty_total = 0;
-    int timeSlot_enlapsed = 0;
+    StampaVideo(ArrayProd, linecounter, scelta);
 
-    for (int k = 0; k < linecounter; k++)
-    {
-        timeSlot_enlapsed += ArrayProd[k].durata;
-        if (timeSlot_enlapsed > ArrayProd[k].scadenza)
-        {
-            penalty_total += (timeSlot_enlapsed - ArrayProd[k].scadenza) * ArrayProd[k].priorità;
-        }
-        printf("%d\tID produzione: %d\tTTrascorso: %d\tScadenza: %d \tPenalty: %d\n", k, ArrayProd[k].id, timeSlot_enlapsed, ArrayProd[k].scadenza, penalty_total);
-    }
-
+    
     return 0;
 }
 
-void OrdinaEDF(Prodotto ArrayProd[], int nProd){  // in ordine di scadenza
+void OrdinaEDF(Prodotto ArrayProd[], int nProd){  // in ordine di scadenza - A parità di scadenza, ordina per priorità e ordine di lettura
     Prodotto temp;
     for (int i = 0; i < nProd - 1; i++){
         for (int j = 0; j < nProd - i - 1; j++){
-            if (ArrayProd[j].scadenza > ArrayProd[j+1].scadenza){
+            if (ArrayProd[j].scadenza > ArrayProd[j+1].scadenza || (ArrayProd[j].scadenza == ArrayProd[j+1].scadenza && ArrayProd[j].priorità < ArrayProd[j+1].priorità)){
                 temp = ArrayProd[j];
                 ArrayProd[j] = ArrayProd[j+1];
                 ArrayProd[j+1] = temp;
@@ -140,7 +128,7 @@ void OrdinaHPF(Prodotto ArrayProd[], int nProd){ //priorità decrescente
     Prodotto temp;
     for (int i = 0; i < nProd - 1; i++){
         for (int j = 0; j < nProd - i - 1; j++){
-            if (ArrayProd[j].priorità < ArrayProd[j+1].priorità){
+            if (ArrayProd[j].priorità < ArrayProd[j+1].priorità || (ArrayProd[j].priorità == ArrayProd[j+1].priorità && ArrayProd[j].scadenza > ArrayProd[j+1].scadenza)){
                 temp = ArrayProd[j];
                 ArrayProd[j] = ArrayProd[j+1];
                 ArrayProd[j+1] = temp;
@@ -149,11 +137,48 @@ void OrdinaHPF(Prodotto ArrayProd[], int nProd){ //priorità decrescente
     }
 }
 
+void StampaVideo(Prodotto ArrayProd[], int nProd, int scelta){
+    // stampo i prodotti secondo l'ordine scelto
+        // 1 Stampo il nome dell'algoritmo scelto ("Pianificazione EDF:\n oppure Pianificazione HPF:\n")
+        // 2 stampo in ordine secono la sintassi: ID:Inizio(timeslot)
+        // 3 stampo l'unità di tempo in cui è prevista la conclusione della produzione dell'ultimo prodotto pianificato
+        // 4 stampo la somma di tutte le penalità dovute a ritardi di produzione
+
+    // Variabili
+    int timeSlot_enlapsed = 0;
+    int penalty_total = 0;
+
+    //1 
+    if (scelta == 0){
+        printf("Pianificazione EDF:\n");
+    } else {
+        printf("Pianificazione HPF:\n");
+    }
+
+    //2 (+ calcolo sequenziale pnalità)
+
+    for (int i = 0; i < nProd; i++){
+        printf("%d:%d\tsarebbe scaduto al ts %d\n", ArrayProd[i].id, timeSlot_enlapsed, ArrayProd[i].scadenza);
+        timeSlot_enlapsed += ArrayProd[i].durata;
+        if (timeSlot_enlapsed > ArrayProd[i].scadenza){
+            printf("penalità !!!\n");
+             penalty_total += (timeSlot_enlapsed - ArrayProd[i].scadenza)*ArrayProd[i].priorità;
+        }
+    }
+
+    //3 
+    printf("Conclusione: %d\n", timeSlot_enlapsed);
+
+    //4 
+    printf("Penalty: %d\n", penalty_total);
+}
+
 /* TODO:
 
 Una volta pianificati i task, il software dovrà stampare a video:
-1. L’ordine dei prodotti, specificando per ciascun prodotto l’unità di tempo in cui è pianificato
-l’inizio della produzione del prodotto. Per ogni prodotto, dovrà essere stampata una riga con la
+1. L’ordine dei prodotti, specificando per ciascun prodotto 
+    l’unità di tempo in cui è pianificato
+l   ’inizio della produzione del prodotto. Per ogni prodotto, dovrà essere stampata una riga con la
 seguente sintassi:
 ID:Inizio
 Dove ID è l’identificativo del prodotto, ed Inizio è l’unità di tempo in cui inizia la produzione.

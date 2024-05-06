@@ -24,13 +24,7 @@ int main()
     FILE *file;
     char fileName[FNMAX];
     int scelta;
-
-    printf("Scegli l'ordinamento:\n");
-    printf("0 - EDF (Earliest deadline first) \n");
-    printf("1 - HPF (Highest priority first) \n");
-    scanf("%d", &scelta);
-
-
+    
     // 01 apertura dati -----------------------------------------
 
     printf("Inserisci il nome del file: ");
@@ -43,6 +37,14 @@ int main()
             printf("Errore nell'apertura del file\n");
             return 1;
         }
+        
+
+    printf("Scegli l'ordinamento:\n");
+    printf("0 - EDF (Earliest deadline first) \n");
+    printf("1 - HPF (Highest priority first) \n");
+    scanf("%d", &scelta);
+
+
 
     // 02 lettura dati -----------------------------------------
 
@@ -134,3 +136,4 @@ void OrdinaHPF(Prodotto ArrayProd[], int nProd){ //priorità decrescente
         }
     }
 }
+
