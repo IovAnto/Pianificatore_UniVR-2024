@@ -148,3 +148,40 @@ void OrdinaHPF(Prodotto ArrayProd[], int nProd){ //priorità decrescente
         }
     }
 }
+
+/* TODO:
+
+Una volta pianificati i task, il software dovrà stampare a video:
+1. L’ordine dei prodotti, specificando per ciascun prodotto l’unità di tempo in cui è pianificato
+l’inizio della produzione del prodotto. Per ogni prodotto, dovrà essere stampata una riga con la
+seguente sintassi:
+ID:Inizio
+Dove ID è l’identificativo del prodotto, ed Inizio è l’unità di tempo in cui inizia la produzione.
+2. L’unità di tempo in cui è prevista la conclusione della produzione dell’ultimo prodotto pianificato.
+3. La somma di tutte le penalità dovute a ritardi di produzione.
+Dunque, nell’esempio precedente, se si utilizzasse l’algoritmo EDF, l’output atteso sarà:
+Pianificazione EDF:
+4:0
+12:10
+Conclusione: 17
+Penalty: 0
+Mentre, se si fosse usato l’algoritmo HPF:
+Pianificazione HPF:
+12:0
+4:17
+Conclusione: 17
+Penalty: 20
+In quanto nel primo caso non ci sarebbero penalità, mentre nel secondo caso il prodotto con ID 4
+terminerebbe con 5 unità di tempo di ritardo, da moltiplicare per il valore di priorità 4.
+L’output del programma dovrà avere la sintassi riportata sopra.
+Una volta stampate a video le statistiche, il programma tornerà al menù iniziale in cui chiede all’utente
+se vuole pianificare la produzione utilizzando uno dei due algoritmi.
+Bonus (facoltativo): se l’utente inserisce due file come parametri da linea di comando, il file
+specificato come secondo parametro verrà utilizzato per salvare i risultati della pianificazione, indicando
+l’algoritmo usato. Ad esempio:
+pianificatore Ordini.txt Pianificazione.txt
+Il programma carica gli ordini dal file Ordini.txt e salva le statistiche stampate a video nel file
+Pianificazione.txt.
+Nel caso l’utente inserisca un solo parametro, la stampa su file sarà ignorata.
+
+*/
