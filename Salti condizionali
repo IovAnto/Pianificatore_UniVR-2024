@@ -1,0 +1,35 @@
+    JE (Jump if Equal):
+        Esegue un salto se i due operandi confrontati sono uguali.
+
+    JNE (Jump if Not Equal):
+        Esegue un salto se i due operandi confrontati non sono uguali.
+
+    JZ (Jump if Zero):
+        Esegue un salto se il risultato dell'ultima operazione aritmetica è zero.
+
+    JNZ (Jump if Not Zero):
+        Esegue un salto se il risultato dell'ultima operazione aritmetica non è zero.
+
+    JG (Jump if Greater):
+        Esegue un salto se il primo operando è maggiore del secondo operando.
+
+    JGE (Jump if Greater or Equal):
+        Esegue un salto se il primo operando è maggiore o uguale al secondo operando.
+
+    JL (Jump if Less):
+        Esegue un salto se il primo operando è minore del secondo operando.
+
+    JLE (Jump if Less or Equal):
+        Esegue un salto se il primo operando è minore o uguale al secondo operando.
+
+    JC (Jump if Carry):
+        Esegue un salto se si verifica un riporto da un'operazione aritmetica non con segno.
+
+    JNC (Jump if No Carry):
+        Esegue un salto se non si verifica un riporto da un'operazione aritmetica non con segno.
+
+    JO (Jump if Overflow):
+        Esegue un salto se si verifica un overflow da un'operazione aritmetica.
+
+    JNO (Jump if No Overflow):
+        Esegue un salto se non si verifica un overflow da un'operazione aritmetica.
