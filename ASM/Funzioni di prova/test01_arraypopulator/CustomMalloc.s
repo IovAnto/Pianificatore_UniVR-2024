@@ -29,5 +29,6 @@ return:
                             # ( numero lines = prodotti ) * 4 = dimensione in byte
     int $0x80               # interrupt
     movl %eax, ArrayOrdini  # salvo l'indirizzo di memoria allocato in ArrayOrdini
+
     
     ret

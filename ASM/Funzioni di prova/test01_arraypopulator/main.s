@@ -15,4 +15,11 @@ ArrayOrdini:
     .global _start
 
 _start:
+
     call OpenFile
+    call OutputToFile
+    movl $1, %eax   # Exit
+    movl $0, %ebx   # Exit
+    int $0x80       # Exit
+
+    # ok 

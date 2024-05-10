@@ -30,47 +30,20 @@ OpenFIle:
 
     call ArrayPopulator     # popolo l'array degli ordini (<ArrayPopulator.s>)
 
-    movl $6, %eax
-    movl fd, %ebx
+    int $0x80               # interrupt
 
-    int $0x80
+    ret                    # ritorno
 
-    popl %ebx
+    
 
-    test %ebx, %ebx 
-    jz nofile
-
-    movl $5, %eax
-    movl $1, %ecx
-    movl $0, %edx
-
-    int $0x80
-
-    cmp $0, %eax
-    jle error
-
-    movl %eax, fd
-
-    movl $4, %eax
-    movl fd, %ebx
-    leal Buffer, %ecx
-    movl $100, %edx
-
-    int $0x80
-
-nofile:
-
-    movl $4, %eax
-    movl $1, %ebx
-    leal Buffer, %ecx
-    movl $10, %edx
-
-    int $0x80
 
 error:
+    
+    # ma mettiamoci na stampina
 
     movl $1, %eax
     movl $0, %ebx
+
 
     int $0x80
 
