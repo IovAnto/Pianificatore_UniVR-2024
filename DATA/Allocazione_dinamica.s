@@ -1,10 +1,10 @@
 .section .data
 
 Ordini:
-    .byte 0 #ID
-    .byte 0 #Durata
-    .byte 0 #Scadenza
-    .byte 0 #Priorità
+    .byte 0 # ID
+    .byte 0 # Durata
+    .byte 0 # Scadenza
+    .byte 0 # Priorità
 
 .section .bss
 
