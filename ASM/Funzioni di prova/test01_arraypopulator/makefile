@@ -1,16 +1,16 @@
 # Makefile
 
-# Find all .s files in the current directory
-SOURCES = $(wildcard *.s)
-# Get the corresponding executable names
-EXECUTABLES = $(SOURCES:.s=)
+EXE = eseguibile
+AS = as --32
+LD = ld -m elf_i386
+FLAGS = -gstabs
+OBJ = $(wildcard *.s)
 
-all: $(EXECUTABLES)
+$(EXE): $(OBJ)
+	$(LD) -o $(EXE) $(OBJ)
 
-# Rule to build each executable
-%: %.s
-    as --32 -o $@.o $<
-    ld -m elf_i386 -o $@ $@.o
+%.o: %.s
+	$(AS) $(FLAGS) -o $@ $<
 
 clean:
-    rm -f *.o $(EXECUTABLES)
+	rm -f *.o $(EXE) core
