@@ -2,6 +2,7 @@
     lines: .byte 0      # numero di righe leti da file = numero prodotti
 
 .section .text
+    .global CustomMalloc
     
 CustomMalloc:
     movl $3, %eax       # syscall READ
@@ -17,7 +18,7 @@ CustomMalloc:
     jmp CustomMalloc    # ricomincio a leggere il file
 
 Incrementa:
-    inc lines           # incremento il contatore delle righe
+    incl lines           # incremento il contatore delle righe
     jmp ContaRighe      # ricomincio a leggere il file
 
 return:

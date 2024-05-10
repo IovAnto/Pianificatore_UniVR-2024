@@ -24,7 +24,7 @@ continua_a_dividere:
 
 	movl  %ecx, %ebx	# copia in %ebx il valore di %ecx 
 
-	jmp 		
+	jmp stampa		
 
 
 dividi:

@@ -4,7 +4,8 @@ Buffer: .ascii ""
 fd: .int 0  
 
 .section .text
-
+    .global OpenFile
+    
 OpenFIle:
 
     popl %ebx               # pop 
