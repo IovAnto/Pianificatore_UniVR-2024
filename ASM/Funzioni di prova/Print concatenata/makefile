@@ -1,17 +1,17 @@
 # Makefile
 
 EXE = eseguibile
-AS = as --32
+AS = as --32 -gstabs
 LD = ld -m elf_i386
 FLAGS = -gstabs
-OBJ = bigbuffer.o 
+OBJ = bufferbig.o 
 
 $(EXE): $(OBJ)
 	$(LD) -o $(EXE) $(OBJ)
 
 
-bigbuffer.o: bigbuffer.s
-	$(AS) $(FLAGS) -o bigbuffer.o bigbuffer.s
+bufferbig.o: bufferbig.s
+	$(AS) $(FLAGS) -o bufferbig.o bufferbig.s
 
 clean:
 	rm -f *.o $(EXE) core
