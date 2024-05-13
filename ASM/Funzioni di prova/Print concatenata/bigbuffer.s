@@ -4,7 +4,7 @@ filename:
 filedescriptor:
     .int 0
 buffer:
-    .space 100
+    .space 100 # Buffer per la lettura del file
 
 newline:
     .byte 10 # Carattere di nuova linea
@@ -15,8 +15,6 @@ virgola:
 index:
     .int 0
 
-array:
-    .space 100
 
 .section .bss
 
@@ -52,25 +50,20 @@ _read_loop:
     cmp $0, %eax
     je _print_array
     
-    # Controllo se il carattere letto è un newline
-    movb buffer, %al    # copio il carattere dal buffer ad AL (registro a 8 bit di %eax)
-    cmpb newline, %al   # confronto AL con il carattere "\n"
-
-    jne _saveToArray    # se sono diversi salvo in array
-
-    # Controllo se il carattere letto è una virgola
-    movb buffer, %al    # copio il carattere dal buffer ad AL (registro a 8 bit di %eax)
-    cmpb virgola, %al   # vedo se è virgola
-    jne _saveToArray    # se sono diversi salvo in array
-    
-    incw index          # altrimenti, incremento index array
+    # Stampa il buffer
+    mov %eax, index # Salva il numero di byte letti
+    call _print
 
 
-_saveToArray:
-    movb buffer, %al    # copio il carattere dal buffer ad AL (registro a 8 bit di %eax)
-    mov index, %edx    # copio index in edx
-    movb %al, array(, %edx, 1) # salvo il carattere in array
-    incw index          # incremento index array
+_print:
+    mov $4, %eax        # Syscall write
+    mov $1, %ebx        # File descriptor (stdout)
+    mov $buffer, %ecx   # Buffer
+    mov index, %edx     # Numero di byte da scrivere
+    int $0x80           # Interruzione del kernel
+
+    ret
+
 
 _close_file:
     mov $6, %eax                # Syscall close
@@ -79,21 +72,6 @@ _close_file:
 
     jmp _exit
 
-
-    _print_array:
-        mov $4, %eax        # Syscall write
-        mov $1, %ebx        # File descriptor (stdout)
-        mov $array, %ecx    # Buffer
-        mov index, %edx     # Numero di byte da scrivere
-        int $0x80           # Interruzione del kernel
-        ret
-
-_print_array_loop:
-    cmpw $0, index     # Confronto index con 0
-    jle _exit          # Se index <= 0, esce
-    decw index         # Decrementa index
-    call _print_array  # Stampa array
-    jmp _print_array_loop
 
 _exit:
     jmp _print_array_loop
