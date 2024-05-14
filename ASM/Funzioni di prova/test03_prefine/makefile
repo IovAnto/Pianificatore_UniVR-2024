@@ -16,7 +16,5 @@ main.o: main.s
 	$(AS) $(FLAGS) -o main.o main.s
 
 
-
-
 clean:
 	rm -f *.o $(EXE) core

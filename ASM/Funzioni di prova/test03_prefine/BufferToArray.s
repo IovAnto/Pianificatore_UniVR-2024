@@ -6,7 +6,7 @@ offset: .int 0
 
 .section .text
     .global BufferToArray
-    .type BufferToArray, @function
+    .type BufferToArray, @function  # Funzione che converte il contenuto della variabile 'buffer' in un array di interi
 
 BufferToArray:
 
@@ -14,21 +14,21 @@ BufferToArray:
 
 loop:
     
-    movb (%esi), %al
+    movb (%esi), %al                # Carico il contenuto di buffer in al
     
-    cmp $0, %al
+    cmp $0, %al                     # Se il contenuto di al è 0, allora esco
     je end
 
-    cmp $44, %al
+    cmp $44, %al                    # Se il contenuto di al è ',' allora salto a 'store'
     je store
 
-    cmp $10, %al
+    cmp $10, %al                    # Se il contenuto di al è '\n' allora salto a 'store'
     je store
 
 num:
-    movb %dl, %bl
+    movb %dl, %bl                   # Copio dl in bl
 
-    sal $3, %edx # *10
+    sal $3, %edx # *10              
     sal $1, %ebx # *10
 
     addb %bl, %dl
@@ -39,7 +39,7 @@ num:
     inc %esi
     jmp loop
 
-store:
+store:                              # Salvo il numero al puntatore corretto nell'array
 
     movb %dl, (%edi)
     inc %edi
@@ -47,7 +47,7 @@ store:
     inc %esi
     jmp loop
 
-end:
+end:                                # Salvo 0 alla fine dell'array e return
     movb $0, (%edi)
     ret
 
