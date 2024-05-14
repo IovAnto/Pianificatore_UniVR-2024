@@ -21,11 +21,11 @@
 
 
 
-% \setmainfont{Helvetica} % Set the main font to Helvetica
-% \setmonofont{Noto Sans Mono} % Set the monofont to Andale Mono
+ \setmainfont{Helvetica} % Set the main font to Helvetica
+ \setmonofont{Noto Sans Mono} % Set the monofont to Andale Mono
 
 % Imposta lo spacing tra il titolo del paragrafo e il testo successivo
-\usepackage[left=3.6cm,right=3.6cm,top=2.5cm,bottom=2.25cm]{geometry}
+% \usepackage[left=3.6cm,right=3.6cm,top=2.5cm,bottom=2.25cm]{geometry}
 
 \definecolor{grigio}{rgb}{0.95,0.95,0.95}
 \definecolor{mygrey}{rgb}{0.8,0.8,0.8}
@@ -102,27 +102,80 @@ L'iterazione su questo processo ha portato a modifiche e ottimizzazioni
 fino al raggiungimento di un livello soddisfacente di prestazioni e funzionalità.
 
 \section{Analisi delle specifiche}
-\subsection{pippo}
+La produzione è organizzata in slot temporali uniformi, durante i quali un solo prodotto può essere in fase di lavorazione.
+Il programma analizza una serie di prodotti, ognuno caratterizzato da un identificativo, una durata, una scadenza e una priorità secondo le specifiche seguenti:
+\begin{itemize}
+    \item Identificativo: un codice da 1 a 127;
+    \item Durata: il numero di slot temporali per il completamento (da 1 a 10);
+    \item Scadenza: il limite massimo di tempo entro cui il prodotto deve essere completato (da 1 a 100);
+    \item Priorità: un valore da 1 a 5, che indica sia la priorità che la penalità per il ritardo sulla scadenza\footnote{Il valore 5 indica la priorità più alta.}.
+\end{itemize}
+Per ogni prodotto consegnato in ritardo, l'azienda deve pagare una penale, calcolata moltiplicando la priorità del prodotto per il ritardo in unità di tempo rispetto alla scadenza.
 
+\subsection{Input}
+Quando l'utente fornisce due file come parametri da linea di comando, il primo viene considerato come l'input, mentre il secondo viene utilizzato per salvare i risultati della pianificazione. Ad esempio:
+
+\begin{verbatim}
+pianificatore Ordini.txt Pianificazione.txt
+\end{verbatim}
+
+In questo caso, il programma caricherà gli ordini dal file \texttt{Ordini.txt} e salverà le statistiche stampate a video nel file \texttt{Pianificazione.txt}.
+
+Se l'utente fornisce solo un parametro, la stampa su file verrà ignorata.
+
+Il file degli ordini dovrà avere un prodotto per riga, con tutti i parametri separati da virgola. Ad esempio, se l'rodine fosse:
+\begin{verbatim}
+ID: 4; Durata: 10; Scadenza: 12; Priorità: 4;
+\end{verbatim}
+Il file dovrà contenere la seguente riga:
+\begin{verbatim}
+4,10,12,4
+\end{verbatim}
+
+Una volta letto il file, il programma mostrerà il menu principale che chiede all'utente quale algoritmo di pianificazione desidera utilizzare.
+
+
+
+\subsection{Algoritmi di pianificazione}
+Una volta letto il file, il programma visualizzerà il menu principale, permettendo all'utente di selezionare l'algoritmo di pianificazione desiderato. Le opzioni disponibili sono:
+
+\begin{enumerate}
+    \item Earliest Deadline First (EDF): Si pianificano per primi i prodotti con scadenza più vicina. In caso di parità nella scadenza, si considera la priorità più alta.
+    \item Highest Priority First (HPF): Si pianificano per primi i prodotti con la priorità più alta. In caso di parità di priorità, si considera la scadenza più vicina.
+\end{enumerate}
+
+L'utente può selezionare uno dei due algoritmi per la pianificazione delle attività del sistema produttivo.
+
+\subsection{Output}
+
+Pippo puppu bau bau ciao ciao come va! hello its me i was wondering if after all these years you'd like to meet to go over everything they say that time's supposed to heal ya but i ain't done much healing...
 
 \section{Codice}
 
-Il Datapath è il componente che si occupa di elaborare le scelte dei giocatori e determinare il vincitore della manche.
-Nonostante abbiano approcci differenti nella descrizione hardware, sia utilizzando SIS a livello di gate che scrivendo codice Verilog in uno stile behavioural, il datapath presenta un comportamento coerente e equivalente in entrambe le rappresentazioni.
+Hello its me i was wondering.. if after all these years you'd like to meet... to go over everything... they say that time's supposed to heal ya... but i ain't done much healing...
 
 \begin{lstlisting}[firstnumber=34]
-  always @(posedge clk) begin : UPDATE_STATE
-    STATO = STATO_PROSSIMO;
-  end;
+  Codice in ASM!!!
+  int main pippo VOID !!!
+  ; Gibberish Assembly Code
+  mov eax, 0
+  add ebx, eax
+  sub ecx, ebx
+  mul edx, ecx
+  div esi, edx
+  push eax
+  pop ebx
+  inc ecx
+  dec edx
+  jmp label
+  label:
+  nop
+  cmp eax, ebx
+  jne label
 
 \end{lstlisting}
 
 
 \vspace{20pt}
-
-Il confronto delle mosse e la verifica della loro validità, per esempio, coinvolgono principalmente operazioni logiche e confronti diretti tra i dati di input.
-Queste operazioni sono più naturalmente implementate in un sistema combinatorio, dove le uscite dipendono solo dagli ingressi attuali senza considerare uno stato interno.\footnote{Si noti che nonostante nel Datapath vengano elaborati direttamente gli input senza tener conto di un eventuale stato del sistema, questo non implica l'assenza di registri funzionali al confronto con dati elaborati in cicli di clock precedenti al calcolo (come per esempio il confronto di una mossa vincente con quella dello stesso giocatore nella manche precedente).}
-La progettazione a \textit{gate level} per quanto riguarda la simulazione in SIS, ci ha permesso di gestire il flusso dei dati in maniera puntuale e precisa permettendoci di testare ogni blocco di porte logiche singolarmente per poi unirlo in un sistema più complesso. 
-
 
 \end{document}
