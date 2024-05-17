@@ -1,5 +1,6 @@
 .section .data
 
+
 pointer: .int 0
 high: .int 0
 low: .int 0
@@ -13,12 +14,19 @@ QuickSort:
     
     movl %esi, pointer
     movl %ebx, low
-    movl %ecx, high
+    movl %edi, high
+    
 
-    cmpl %ecx, %ebx
+    cmpl %edi, %ebx
     jge end
 
     call partition
+    #metto le giuste variabili nei registri
+
+    #ricorsivo
+
+    call QuickSort
+
 
 end:
 
