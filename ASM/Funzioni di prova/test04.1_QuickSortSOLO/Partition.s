@@ -37,21 +37,25 @@ swap:
 
 
     # swap(&arr[i + 1], &arr[high]) -> asm: array[i+4] <-> array[high]
-    # ASM: swap([i + 4] , arr[%edi])
+    # ASM: exchange(arr[i + 4] , arr[%edi])
+
+    # movb (%esi, %ebx, 1), %al      # carico il valore puntato da esi + ebx in al
+    # movb (%esi, %edi, 1), %cl      # carico il valore puntato da esi + edi in cl
+    # xchgb %al, %cl                 # scambio i valori di al e cl
+    # movb %al, (%esi, %edi, 1)      # metto il valore di al in esi + edi
+    # movb %cl, (%esi, %ebx, 1)      # metto il valore di cl in esi + ebx
+
+
+
+     movl i, %edx                    # salvo il valore di i in edx   
+     addl $-3, %ebx                  # decremento ebx di 3 (priorità / colonna 4 del csv)
+     movl (%esi, %ebx, 1), %eax      # metto in eax in valore puntato da esi + ebx
+     movl (%esi, %edx, 1), %ecx
     
-
-
-    # movl i, %edx                    # salvo il valore di i in edx   
-    # addl $-3, %ebx                  # decremento ebx di 3 (priorità / colonna 4 del csv)
-
-    # movl (%esi, %ebx, 1), %eax      # metto in eax in valore puntato da esi + ebx
-    # movl (%esi, %edx, 1), %ecx
-   #  
-    # movl %eax, (%esi, %edx, 1)
-    # movl %ecx, (%esi, %ebx, 1)
-
-    # addl $3, %ebx
-    # addl $4, i                     # return (i + 1)
+     movl %eax, (%esi, %edx, 1)
+     movl %ecx, (%esi, %ebx, 1)
+     addl $3, %ebx
+     addl $4, i                     # return (i + 1)
 
 next:
 
