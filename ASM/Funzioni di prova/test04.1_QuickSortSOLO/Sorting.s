@@ -8,24 +8,24 @@
     pivot: .byte 0 # pivot value
 
 .section .text
-    .globl _start
+    .globl _start # entry point
 
 _start:
 
-    movl $array, pointer
+    movl $array, pointer # pointer = &array[0]
 
-#----------------------------
+# ----------------------------
 
-    movl pointer, %esi # int* arr
-    movl $0, %ebx   # int low
-    movl len, %edi #int high
-    decl %edi # high--
+    movl pointer, %esi          # int* arr / puntatore all'array
+    movl $0, %ebx               # int low / indice basso
+    movl len, %edi              # int high / indice alto
+    decl %edi                   # high-- / indice alto -1 
     
-    call QuickSort
+    call QuickSort              # QuickSort(arr, low, high)
     
-    movl $1, %eax
-    movl $0, %ebx
+    movl $1, %eax               # exit
+    movl $0, %ebx               # exit status
 
-    int $0x80
+    int $0x80                   # syscall
     
     
