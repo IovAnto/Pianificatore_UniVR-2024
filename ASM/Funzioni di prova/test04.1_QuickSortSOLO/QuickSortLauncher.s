@@ -42,7 +42,7 @@ QuickSort:
         movl pivot, %edi
         addl $-4, %edi
 
-        call QuickSort
+        call QuickSort # branch 1
 
         movl %eax, pivot
 
@@ -51,19 +51,13 @@ QuickSort:
         movl high, %edi
         addl $4, %ebx
         
-        call QuickSort
+        call QuickSort # branch 2
 
     # chiamo ricorsivamente QuickSort per la parte sinistra dell'array
     # preparo regitstri con gli argomenti giusti:
     # puntatore ad array
     # puntatore a array[low]
     # puntatore a array[pivot-1]
-
-    
-    #ricorsivo
-
-    call QuickSort
-
 
 end:
 
