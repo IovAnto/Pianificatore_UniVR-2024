@@ -47,7 +47,8 @@ QuickSort:
         subl $4, %esi       # sottraggo 4
         movl %esi, i        # i = low - 4 (= -1)
         # j = low
-        movl low, esi       # low in esi
+        movl low, %esi       # low in esi
+
         movl %esi, j # pozor! ho messo j in esi!
 
         # scorro array da array[j] ad array[high-1]
