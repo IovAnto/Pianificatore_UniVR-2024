@@ -1,0 +1,75 @@
+
+#Sorting.s
+
+ESI = pointer
+EBX = 0
+EDI = lunghezza array - 1 
+
+chiama QuickSort ->
+
+   #QuickSort.s
+    variabili pronte:
+    - pointer 
+    - low [punta alla poszione bassa della partizione dell'array - inizia = 0]
+    - high [punta alla posizione alta della partizione dell'array - inizia = lunghezza array - 1]
+
+    movl %esi, pointer 
+    movl %ebx, low 
+    movl %edi, high
+
+    confronta low con high
+        se low < high
+            chiama Partition
+            chiama QuickSort con low e pi - 1
+            chiama QuickSort con pi + 1 e high
+        
+        altrimenti vai #end 
+
+            #Partition.s
+            prende puntatore ad array, low e high come argomenti
+            vuole in entrata: 
+                - EAX = high
+                - DL (1 Byte di EDX) = il pivot (elemnto in array[high])
+                - 
+
+
+Funzione QuickSort(arr, low, high) [arr EAX, low EBX, high ECX ---> DATA EDX]
+    // Finché l'indice iniziale è minore dell'indice finale
+    Se (low < high)
+        // Scegli il pivot come l'ultimo elemento dell'array
+        pivot = arr[high]
+        // Inizializza l'indice per gli elementi minori del pivot
+        i = low - 1
+
+        // Scorri l'array da low a high - 1
+        Per j da low a high - 1
+            // Se l'elemento corrente è minore o uguale al pivot
+            Se (arr[j] <= pivot)
+                // Incrementa l'indice degli elementi minori
+                i = i + 1
+                // Scambia arr[i] con arr[j]
+                swap(arr[i], arr[j])
+
+        // Scambia arr[i + 1] con arr[high] (il pivot)
+        swap(arr[i + 1], arr[high])
+
+        // Ottieni l'indice del pivot dopo la partizione
+        pi = i + 1
+
+        // Ricorsione per ordinare gli elementi a sinistra del pivot
+        QuickSort(arr, low, pi - 1)
+        // Ricorsione per ordinare gli elementi a destra del pivot
+        QuickSort(arr, pi + 1, high)
+
+        !!
+movl offset(base, index, scale), destination
+- offset: Un valore costante che viene sommato all'indirizzo.
+- base: Un registro che contiene l'indirizzo di base.
+- index: Un registro che contiene l'indice per l'indirizzamento.
+- scale: Un moltiplicatore che viene applicato all'indice (può essere 1, 2, 4 o 8).
+        !!
+
+        cmpl (%eax, %esi, 4), %ebx
+
+        comparare il valore in %ebx con:
+        il valore in %eax + (%esi * 4)

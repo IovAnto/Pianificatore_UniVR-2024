@@ -4,8 +4,6 @@
                     
     pointer: .int 0 # pointer to the array
     len: .int 40 # length of the array
-    
-    pivot: .byte 0 # pivot value
 
 .section .text
     .globl _start # entry point
@@ -16,12 +14,10 @@ _start:
 
 # ----------------------------
 
-    movl pointer, %esi          # esi = pointer
-    movl $0, %ebx               # ebx = 0
-    movl len, %edi              # edi = len
-    decl %edi                   # edi = len - 1
-    
-    call QuickSort              # QuickSort(arr, low, high) -> quick sort(esi, ebx, edi)
+    movl pointer, %eax # eax = pointer
+    movl len, %ebx # ebx = len
+
+    call QuickSort
     
     movl $1, %eax               # exit
     movl $0, %ebx               # exit status
