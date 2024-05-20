@@ -13,6 +13,7 @@ key: .int 0
 
 InsertionSort:
 
+
 #   len in EBX
 #   pointer in EAX
 movl $1, i  # i = 1
@@ -21,9 +22,9 @@ movl $1, i  # i = 1
 forLoop:
 
     movl i, %esi            # key = arr[i] -> arr[ESI]
-    
-    cmpl %esi, %ebx            # i < n
-    jl endForLoop          # se i >= n, esci dal ciclo for
+
+    cmpl %esi, %ebx         # i < n
+    jl endForLoop           # se i >= n, esci dal ciclo for
     
     movl i, %ecx            # j = i -> ECX
     dec %ecx                # j = i-1
@@ -47,7 +48,7 @@ forLoop:
             cmpl $0, %ecx                 # j >= 0 -> 0 > j
             jg endWhile                     
     
-            cmpb 3(%eax, %esi, 4), %dl      # arr[j] > key
+            cmpb 3(%eax, %ecx, 4), %dl      # arr[j] > key
             jle endWhile                    # se arr[j] <= key, esci dal ciclo while
 
 
@@ -58,6 +59,8 @@ forLoop:
             movl %edx, (%eax, %ecx, 4)     # muovi arr[j] in arr[j+1] (4 byte!) || (%eax, %ecx, 4) = (*array + (ecx*4))
             
             dec %ecx                        # decremento j
+            dec %ecx                        # decremento j
+
             movl %ecx, j                    # j <= j - 1
             
             jmp while                       # torna all'inizio del ciclo while
@@ -69,13 +72,14 @@ forLoop:
             inc %ecx                        # j = j + 1
             movl key, %edx     # Move the value of key into register EDX
             movb %dl, 3(%eax, %ecx, 4)     # arr[j+1] <= key
+
+            movl i, %esi
             inc %esi                        # i = i + 1 
             movl %esi, i                    # i <= i + 1
             
             jmp forLoop                     # torna all'inizio del ciclo for
                
-    endForLoop:
-        
-    movl %eax, %ebx
-    ret                                 # fine funzione
+endForLoop:
+
+ret                                 # fine funzione
 

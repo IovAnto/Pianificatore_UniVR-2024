@@ -1,10 +1,11 @@
 .section .data
 
-    array: .byte 0,0,0,5,0,0,0,2,0,0,0,1,0,0,0,4 # array to be sorted
+    # array: .byte 0,0,0,5,0,0,0,2,0,0,0,1,0,0,0,4 # array to be sorted
+    array: .byte 1,2,3,4,3,4,2,4,3,2,4,2,2,4,2,2,4 # array to be sorted
 
                     
     pointer: .int 0 # pointer to the array
-    len: .int 16 # length of the array
+    len: .int 4 # length of the array
 
 .section .text
     .globl _start # entry point
