@@ -100,7 +100,6 @@ PrepToORder:                        # preparo i registri per la chiamata a Array
     # se scelta qualcosa call EDF order o HPF order
 
     # intanto chiamo ArraySort
-    call ArraySort                  # chiama la funzione ArraySort
 
 
 
