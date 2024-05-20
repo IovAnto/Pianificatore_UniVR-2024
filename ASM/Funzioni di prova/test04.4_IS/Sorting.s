@@ -1,21 +1,33 @@
 .section .data
 
-    array: .byte 0,0,0,3,0,0,0,5,0,0,0,1,0,0,0,4,0,0,0,2,0,0,0,3,0,0,0,1,0,0,0,2,0,0,0,1,0,0,0,3 # array to be sorted
+    array: .byte 0,0,0,5,0,0,0,2,0,0,0,1,0,0,0,4 # array to be sorted
+
                     
     pointer: .int 0 # pointer to the array
-    len: .int 40 # length of the array
+    len: .int 16 # length of the array
 
 .section .text
     .globl _start # entry point
 
 _start:
 
-    movl $array, pointer # pointer = &array[0]
+    movl $array, %eax # pointer = &array[0]
+    movl %eax, pointer
+    movl $80, len # len = 80
+    movl len, %ebx
+    
 
 # ----------------------------
+# non so perchè ma mi cambia l'array quando poppo len (non riesco a trovare alcuna spiegazione)
+#    push %eax                
+#    push %ebx
 
-    push pointer
-    push len
+    # STACK:
+    #   |   ...     |
+    #   |   ...     |
+    #   |   pointer |
+    #   |   len     |
+    
 
     call InsertionSort
     
