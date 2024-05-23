@@ -6,22 +6,6 @@ buffer: .space 1024
 fd: .int 0
 len: .int 0
 ArrayPointer: .int 0
-############################################ Menu ############################################
-MsgMenu: .string "TEST MENU!!!!: Scegli un'opzione\n\0"
-MenuLen: .int .-MsgMenu
-#-----------------------------
-MsgScelta: .string "1) Sort EDF\n2) Sort HPF\n3)Exit\n\n\0"
-SceltaLen: .int .-MsgScelta
-#-----------------------------
-SceltaErr: .string "TEST MENU!!!!: Scelta non valida\n\0"
-SceltaErrLen: .int .-SceltaErr
-#-----------------------------
-SortMethod: .byte 0
-#-----------------------------
-MsgExit: .string "Chiusura programma...\n\0"
-MsgExitLen: .int .-MsgExit
-##############################################################################################
-
 .section .text
     .globl _start
 
@@ -99,7 +83,7 @@ malloc:                             # alloca spazio per l'array
     jle Error                       # esi è l'indirizzo di memoria puntato dalla malloc (inizio array) mentre in eax c'è l'indirizzo di fine array
     
     movl %esi, ArrayPointer         # se tutto funziona salvo l'indirizzo di memoria in ArrayPointer cosi lo posso usare in BufferToArray
-        
+    
 PrepArr:                            # preparo i registri per la chiamata a BufferToArray
     
     movl $buffer, %esi              # muove l'indirizzo di buffer in esi (source)
@@ -107,65 +91,12 @@ PrepArr:                            # preparo i registri per la chiamata a Buffe
     
     call BufferToArray              # chiama la funzione BufferToArray
 
-Menu:
 
-    movl $4, %eax                   # syscall per la scrittura
-    movl $1, %ebx                   # file descriptor 1 (stdout)
-    movl $MsgMenu, %ecx                # indirizzo di memoria di Menu
-    movl MenuLen, %edx             # lunghezza di Menu
+# in EAX ho la base in base alla scelta dell'utente
 
-    int $0x80  
-
-Scelta:
-
-    movl $4, %eax                   # syscall per la scrittura
-    movl $1, %ebx                   # file descriptor 1 (stdout)
-    movl $MsgScelta, %ecx              # indirizzo di memoria di Scelta
-    movl SceltaLen, %edx           # lunghezza di Scelta
-
-    int $0x80
-
-    movl $3, %eax                   # syscall per la lettura
-    movl $0, %ebx                   # file descriptor 0 (stdin)
-    movl $SortMethod, %ecx          # indirizzo di memoria di SortMethod
-    movl $1, %edx                   # lunghezza di SortMethod
-
-    int $0x80
-
-    xorl %eax, %eax              
-
-    cmpb $49, SortMethod             
-    je EDF                 # chiama EDF
-
-    cmpb $50, SortMethod
-    je HPF                 # chiama HPF                
-
-    cmpb $51, SortMethod
-    je Exit
-
-SceltaNonValida:
-
-    movl $4, %eax                   # syscall per la scrittura
-    movl $1, %ebx                   # file descriptor 1 (stdout)
-    movl $SceltaErr, %ecx           # indirizzo di memoria di SceltaErr
-    movl SceltaErrLen, %edx        # lunghezza di SceltaErr
-
-    int $0x80
-
-    jmp Scelta
-
-EDF:
-
-    movl $2, %eax
-
-    jmp PrepToORder
-
-HPF:
-
-    movl $3, %eax
-    
 PrepToORder:                        # preparo i registri per la chiamata a ArraySort
     
+    call Menu                       # chiama la funzione menu   
     pushl %eax
     pushl ArrayPointer             # pusha l'indirizzo di ArrayPointer
     movl len, %eax
