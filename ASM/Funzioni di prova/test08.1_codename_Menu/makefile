@@ -4,7 +4,7 @@ EXE = Test1
 AS = as --32
 LD = ld -m elf_i386
 FLAGS = -gstabs
-OBJ = BufferToArray.o main.o btoa.o insertionSort.o menu.s
+OBJ = BufferToArray.o main.o btoa.o insertionSort.o menu.o
 
 $(EXE): $(OBJ)
 	$(LD) -o $(EXE) $(OBJ)

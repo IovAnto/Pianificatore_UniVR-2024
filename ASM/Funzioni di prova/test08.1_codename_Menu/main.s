@@ -97,6 +97,10 @@ PrepArr:                            # preparo i registri per la chiamata a Buffe
 PrepToORder:                        # preparo i registri per la chiamata a ArraySort
     
     call Menu                       # chiama la funzione menu   
+
+    cmpl $0, %eax                  # se l'utente ha scelto di non ordinare esce
+    je Error
+
     pushl %eax
     pushl ArrayPointer             # pusha l'indirizzo di ArrayPointer
     movl len, %eax
@@ -152,15 +156,6 @@ print:
 
     int $0x80
     
-Exit:
-
-    movl $4, %eax                   # syscall per la scrittura
-    movl $1, %ebx                   # file descriptor 1 (stdout)
-    movl $MsgExit, %ecx             # indirizzo di memoria di MsgExit
-    movl MsgExitLen, %edx          # lunghezza di MsgExit
-
-    int $0x80
-
 
 Error:
 

@@ -71,14 +71,27 @@ SceltaNonValida:
 EDF:
 
     movl $2, %eax
-
     jmp end
 
 HPF:
 
     movl $3, %eax
-    
+    jmp end
+
+
+
+Exit:
+
+    movl $4, %eax                   # syscall per la scrittura
+    movl $1, %ebx                   # file descriptor 1 (stdout)
+    movl $MsgExit, %ecx             # indirizzo di memoria di MsgExit
+    movl MsgExitLen, %edx          # lunghezza di MsgExit
+
+    int $0x80
+
+    movl $0, %eax                   # muovo -1 in eax per passare errore
 
 end:
 
     ret
+
