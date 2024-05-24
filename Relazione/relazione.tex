@@ -19,8 +19,12 @@
 
 \usepackage[font={small}, labelfont={bf}, format=hang, skip=8pt]{caption}
 
+
 \setmainfont{Helvetica} % Set the main font to Helvetica
 \setmonofont{Noto Sans Mono} % Set the monofont to Andale Mono
+
+% Imposta lo spacing tra il titolo del paragrafo e il testo successivo
+\usepackage[left=3.6cm,right=3.6cm,top=2.5cm,bottom=2.25cm]{geometry}
 
 \definecolor{grigio}{rgb}{0.95,0.95,0.95}
 \definecolor{mygrey}{rgb}{0.8,0.8,0.8}
@@ -117,12 +121,24 @@ Una volta letto il file, il programma visualizzerà il menu principale, permette
 
 L'utente può selezionare uno dei due algoritmi per la pianificazione delle attività del sistema produttivo.
 
+\section{Sviluppo}
+
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{schema.png}
-  \caption{Schema del sistema produttivo}
+  \includegraphics[width=\textwidth]{scheme.png}
+  \caption{Schema del funzionamento del software.}
   \label{fig:schema}
 \end{figure}
+
+\subsection{Acquisizione e struttura dati}
+Il software acquisisce l'intero contenuto del file di input e lo memorizza in una variabile nel buffer, parallelamente ne calcola la lunghezza (numero di righe) per allocare la memoria necessaria per la struttura dati vera e propria. Successivamente, il programma procede a leggere il contenuto del buffer, converte le informazioni dal formato ASCII al formato numerico e le memorizza in un array di struct. La peculiarità di questa struttura dati è che lo spazio occupato da un prodotto (ID, durata, scadenza e priorità) è di 4 byte totali, pari alla dimensione di un registro interno del processore considerato per l'applicazione del software.
+
+\subsection{Ordinamento dei prodotti}
+Acquisita la struttura dati, il programma acquisisce la scelta dell'algoritmo di pianificazione da parte dell'utente e procede con l'ordinamento dei prodotti in base alla scelta effettuata.
+Il sorting è gestito da una variabile che definisce la priorità di ordinamento (HPF o EDF) che viene passata alla funzione di ordinamento come parametro. La funzione di ordinamento, a sua volta, si occupa di confrontare i prodotti in base alla priorità scelta e di riordinarli in base a tale criterio nella struttura dati stessa.
+
+Per l'effettivo ordinamento dei prodotti, il software utilizza un algoritmo di sorting di tipo "insertion sort" che si è dimostrato il più efficiente per la dimensione dei dati in ingresso.
+Il secondo ordinamento, ovvero quello che compara il parametro "scadenza" in caso di parità di priorità o "priorità in caso di pari scadenza, è gestito da una funzione basata su algoritmo di bubble sort.
 
 \subsection{Output}
 Nel caso venisse specificato un file di output, il software stamperà su di esso i risultati della pianificazione secondo il seguente schema:
@@ -134,23 +150,39 @@ Conclusione:<timeslot termine produzione>
 Penalty:<penalità totale>
 \end{verbatim}
 
-\section{Funzionamento logico}
+\subsection{Penalità}
+Se un prodotto non viene completato entro la scadenza, il programma calcola la penalità in base alla priorità del prodotto e alla quantità di slot temporali di ritardo. La penalità è calcolata come segue:
 
-\subsection{Acquisizione e struttura dati}
-Il software acquisisce l'intero contenuto del file di input e lo memorizza in una variabile nel buffer, parallelamente ne calcola la lunghezza (numero di righe) per allocare la memoria necessaria per la struttura dati vera e propria. Successivamente, il programma procede a leggere il contenuto del buffer, converte le informazioni dal formato ASCII al formato numerico e le memorizza in un array di struct. La peculiarità di questa struttura dati è che lo spazio occupato da un prodotto (ID, durata, scadenza e priorità) è di 4 byte totali, pari alla dimensione di un registro interno del processore considerato per l'applicazione del software.
+\[
+\text{Penalità} = \text{Priorità} \times \text{Ritardo}
+\]
 
-\subsection{Ordinamento dei prodotti}
-Acquisita la struttura dati, il programma acquisisce la scelta dell'algoritmo di pianificazione da parte dell'utente e procede con l'ordinamento dei prodotti in base alla scelta effettuata.
-
-\subsection{Sorting}
-Quick sort!
-
-\subsection{Calcolo penali, salvataggio risultato ed uscita}
-fprintf
 
 \section{Codice}
 
-...
+
+\subsection{File sorgente}
+
+\subsubitem{Il programma è composto dai seguenti file sorgente in linguaggio assembly:}
+\begin{itemize}
+  \item \texttt{btoa.s}: byte to ASCII, funzione per la conversione di un byte in ASCII;
+  \item \texttt{BufferToArray.s}: funzione per la conversione del buffer di lettura in un array di struct;
+  \item \texttt{InsertionSort.s}: funzione per il primo ordinamento dei prodotti;
+  \item \texttt{EqualSort.s}: funzione per il secondo ordinamento dei prodotti;
+  \item \texttt{menu.s}: file contenente la funzione per il menù.
+  \item \texttt{main.s}: funzione principale del programma.
+\end{itemize}
+
+A completare la struttura del programma, sono presenti i seguenti file di supporto:
+\begin{itemize}
+  \item \texttt{Makefile}: file per la compilazione del programma;
+  \item \texttt{EDF.txt}: file di input con penalità uguale a zero con EDF e maggiore di zero con HPF;
+  \item \texttt{HPF.txt}: file di input con penalità uguale a zero con HPF e maggiore di zero con EDF;
+  \item \texttt{Both.txt}: file di input con penalità uguale a zero con entrambi gli algoritmi;
+  \item \texttt{None.txt}: file di input con penalità maggiore di zero con entrambi gli algoritmi.
+\end{itemize}
+
+\subsection{Analisi di alcune parti fondamentali del codice}
 
 \begin{lstlisting}[firstnumber=34]
   Codice in ASM!!!
@@ -159,7 +191,52 @@ fprintf
   mov eax, 0
   add ebx, eax
   sub ecx, ebx
+  
   mul edx, ecx
+  div  
+  nop
+  cmp eax, ebx
+  jne label
+\end{lstlisting}
+
+\begin{lstlisting}[firstnumber=343]
+
+ul edx, ecx
+  div esi, edx
+  push eax
+  pop ebx
+  inc ecx
+  dec edx
+  jmp label
+  label:l edx, ecx
+  div esi, edx
+  push eax
+  pop ebx
+  inc ecx
+  dec edx
+  jmp label
+  label:l edx, ecx
+  div esi, edx
+  push eax
+  pop ebx
+  inc ecx
+  dec edx
+  jmp label
+  label:l edx, ecx
+  div esi, edx
+  push eax
+  pop ebx
+  inc ecx
+  dec edx
+  jmp label
+  label:l edx, ecx
+  div esi, edx
+  push eax
+  pop ebx
+  inc ecx
+  dec edx
+  jmp label
+  label:l edx, ecx
   div esi, edx
   push eax
   pop ebx
@@ -170,6 +247,14 @@ fprintf
   nop
   cmp eax, ebx
   jne label
-\end{lstlisting}
+  sub ecx, ebx
+  mul edx, ecx
+  div esi, edx
+!
+
+  sub ecx, ebx
+
+  \end{lstlisting}
+
 
 \end{document}
