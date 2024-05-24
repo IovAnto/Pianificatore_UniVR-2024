@@ -74,7 +74,7 @@
   L'obiettivo del progetto è sviluppare un software per la pianificazione delle attività di un sistema produttivo.
   La produzione è organizzata in slot temporali uniformi, durante i quali un solo prodotto può essere in fase di lavorazione. 
   Il software consentirà di ottimizzare la pianificazione delle attività secondo due algoritmi di pianificazioni differenti.
-  L'intero software è stato sviluppato in linguaggio Assembly e testato su un insieme di dati di prova allegati a questa documentazione.
+  L'intero software è stato sviluppato in linguaggio Assembly (Sintassi AT&T) e testato su un insieme di dati di prova allegati a questa documentazione.
 
 \end{abstract}
 
@@ -107,10 +107,10 @@ Il programma analizza una serie di prodotti, ognuno caratterizzato da un identif
     \item Scadenza: il limite massimo di tempo entro cui il prodotto deve essere completato (da 1 a 100);
     \item Priorità: un valore da 1 a 5, che indica sia la priorità che la penalità per il ritardo sulla scadenza\footnote{Il valore 5 indica la priorità più alta.}.
 \end{itemize}
-Per ogni prodotto consegnato in ritardo, l'azienda deve pagare una penale, calcolata moltiplicando la priorità del prodotto per il ritardo in unità di tempo rispetto alla scadenza.
+Al termine della pianificazione il programma calcolerà la penale dovuta agli eventuali ritardi di produzione.
 
 \subsection{Input}
-Quando l'utente fornisce due file come parametri da linea di comando, il primo viene considerato come l'input, mentre il secondo viene utilizzato per salvare i risultati della pianificazione. Ad esempio:
+L'utente invoca il programma  "pianificatore" e fornisce due file come parametri da linea di comando, il primo viene considerato input, mentre il secondo viene utilizzato per salvare i risultati della pianificazione. Ad esempio:
 
 \begin{verbatim}
 pianificatore Ordini.txt Pianificazione.txt
@@ -118,7 +118,7 @@ pianificatore Ordini.txt Pianificazione.txt
 
 In questo caso, il programma caricherà gli ordini dal file \texttt{Ordini.txt} e salverà le statistiche stampate a video nel file \texttt{Pianificazione.txt}.
 
-Se l'utente fornisce solo un parametro, la stampa su file verrà ignorata.
+Se l'utente fornisce solo un parametro, il salvataggio della pianficazione su file verrà ignorata.
 
 Il file degli ordini dovrà avere un prodotto per riga, con tutti i parametri separati da virgola. Ad esempio, se l'rodine fosse:
 \begin{verbatim}
@@ -128,8 +128,6 @@ Il file dovrà contenere la seguente riga:
 \begin{verbatim}
 4,10,12,4
 \end{verbatim}
-
-Una volta letto il file, il programma mostrerà il menu principale che chiede all'utente quale algoritmo di pianificazione desidera utilizzare.
 
 
 \subsection{Algoritmi di pianificazione}
@@ -143,14 +141,27 @@ Una volta letto il file, il programma visualizzerà il menu principale, permette
 L'utente può selezionare uno dei due algoritmi per la pianificazione delle attività del sistema produttivo.
 
 \subsection{Output}
+Nel caso venisse specificato un file di output il software stamperà su di esso i risultati della pianificazione secondo il seguente schema:
+\begin{verbatim}
+<Algoritmo di pianificazione scelto>:
+<ID del prodotto>:<Inizio produzione>
+[...]
+Conclusione:<timeslot termine produzione>
+Penalty:<penalità totale>
+\end{verbatim}
 
-Pippo puppu bau bau ciao ciao come va! hello its me i was wondering if after all these years you'd like to meet to go over everything they say that time's supposed to heal ya but i ain't done much healing...
+
 \section{Funzionamento logico}
 
-\subsection{Struttura dati}
-La lettura del file salva in una variabile buffer alla quale è stata allocata preventivamente 1024k di spazio
+\subsection{Acquisizione e struttura dati}
+Il software acquisce l'intero contenuto del file di input e lo memorizza in una varaibile nel buffer, 
+parallelamente ne calcola la lunghezza (numero di righe) per allocare la memoria necessaria per la struttura dati vera e propria.
+Successivamente il programma procede a leggere il contenuto del buffer, converte le informazioni dal formato ASCII al formato numerico e lo memorizza in un array di struct.
+La peculiarità di questa struttura dati è che lo spazio occupato da un prodotto (ID, durata, scadenza e priorità) è di 4 byte totali, pari alla dimensione di un registro interno del processore considerato per l'applicazione del software.
 
-\subsection{Schema generale di funzionamento}
+\subsection{Ordinamento dei prodotti}
+Acquisita la struttura dati il programma acquisice la scelta dell'algoritmo di pianificazione da parte dell'utente e procede con l'ordinamento dei prodotti in base alla scelta effettuata.
+
 
 
 Acquisizione argomenti -> selzione algoritmo di sorting -> ordinamento -> calcolo penali -> stampa risultati
@@ -203,5 +214,5 @@ fprintf
 
 
 
-39
+
 
