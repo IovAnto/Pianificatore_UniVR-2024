@@ -6,6 +6,7 @@ buffer: .space 1024
 fd: .int 0
 len: .int 0
 ArrayPointer: .int 0
+ErrorString: .asciz "Errore\n"
 
 .section .text
     .globl _start
@@ -120,7 +121,7 @@ SecondSort:
 ProvaElaborazione:                              
 
     cmpl $0, OutputFile 
-    je Printer    
+    je exit #per ora
 
     movl $5, %eax                   # Open file
     movl OutputFile, %ebx   
@@ -134,30 +135,27 @@ ProvaElaborazione:
 
     movl %eax, fd
 
-ArrayToBuffer:
+
+Error:
+
+    # stampo un messaggio di erroe ed esco su standard error
+
+    movl $4, %eax                   # Write
+    movl $2, %ebx                   # Standard error
+    movl $ErrorString, %ecx         # Stringa di errore
+    movl $13, %edx                  # Lunghezza stringa
+
+    int $0x80
+
+    jmp exit
 
 
-    pushl %eax
-    pushl %eax
-    pushl %eax
 
-    cmpl $3, %eax
-    je updown
 
-downup:
+exit:
 
-    xorl %ecx, %ecx
-    movl ArrayPointer, %esi
+    movl $1, %eax                   # Exit
+    movl $0, %ebx
 
-EDFloop:
-    
-    cmpl %ecx, len
-    jle EDFend
+    int $0x80
 
-    movl ArrayPointer(%ecx), %eax
-    
-    incl %ecx
-
-    call btoa
-
-# è incompleto ma funzionante da modificare BtoA.s 

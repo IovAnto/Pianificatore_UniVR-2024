@@ -57,7 +57,7 @@ increment:                      # guardo priorità
     subl $3, %ebx           # =
 
     cmpb %cl, %dl           # confronto i e j
-    jg reset                
+    jl reset                
     je SetDurata
 
     movl (%esi, %eax, 1), %ecx
@@ -158,3 +158,4 @@ endLoop:
     # Assume that %eax contains the value to be converted
     # ror $16, %eax     # Swap the two 16-bit halves of EAX
     # bswap %eax        # Swap the bytes within each 16-bit half
+
