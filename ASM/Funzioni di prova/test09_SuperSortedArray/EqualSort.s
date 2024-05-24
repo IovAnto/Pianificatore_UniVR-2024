@@ -96,9 +96,9 @@ decrement:                  # guardo scadenza
 
     jmp reset
 
-SetDurata:
+SetDurata:        # se scadenza uguale priorità uguali, controllo la durata
 
-    addl $1, %eax
+    addl $1, %eax    # incremento così vado da ID a durata
     addl $1, %ebx
 
 Durata:
@@ -123,8 +123,8 @@ Durata:
 
 reset:
 
-    addb base, %al
-    addb base, %bl
+    addb base, %al     # resetto base
+    addb base, %bl     # resetto base
 
 next:
 
@@ -135,7 +135,7 @@ next:
     addl $4, %ebx
     jmp loop
 
-Redo:
+Redo:                   # se ho fatto uno swap, ripeto il confronto
 
     movl $0, flag
     movl base, %ecx
