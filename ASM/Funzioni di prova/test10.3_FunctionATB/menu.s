@@ -10,11 +10,11 @@ SceltaLen: .int .-MsgScelta
 SceltaErr: .string "Scelta non valida.\n Inserire un valore compreso da 1 e 3.\n\0"
 SceltaErrLen: .int .-SceltaErr
 
-SortMethod: .byte 0
 
 MsgExit: .string "Chiusura programma\n\0"
 MsgExitLen: .int .-MsgExit
 
+SortMethod: .byte 0
 
 .section .text 
     .global Menu

@@ -1,14 +1,13 @@
 .section .data
 
-penality: .int 0
-time: .byte 0
+# ------------------ VARIABILI GLOBALI -------------------------- #
 InputFile: .int 0
 OutputFile: .int 0
 buffer: .space 1024
 bufferLen: .int 0
 fd: .int 0
-len: .int 0
 ArrayPointer: .int 0
+len: .int 0                         # lunghezza array
 choice: .byte 0                     # la scelta della pianificazione EDF - HPF
 
 
@@ -38,7 +37,7 @@ _start:                             # inizio del programma
     popl %eax 
     popl InputFile
     popl OutputFile
-                        # ----- Apro il file ----- #
+    # ----- Apro il file ----- #
     movl $5, %eax                # Open file
     movl InputFile, %ebx
     movl $0, %ecx                # Read only
@@ -50,7 +49,7 @@ _start:                             # inizio del programma
 
     movl %eax, fd
 
-                        # --- Leggo il file -> buffer --- #
+    # --- Leggo il file -> buffer --- #
     movl $3, %eax                # Read file
     movl fd, %ebx
     movl $buffer, %ecx           # da provare con movl $buffer
@@ -65,9 +64,7 @@ FileClose:                          # chiudo il file, non serve più e tutto il 
 
     movl $6, %eax                # Close file
     movl fd, %ebx
-
     int $0x80
-
 
     movl $buffer, %esi              # sposto puntatore all'inizio di buffer in esi
     
@@ -115,9 +112,6 @@ PrepArr:                            # preparo i registri per la chiamata a Buffe
     
     call BufferToArray              # chiama la funzione BufferToArray
 
-
-
-
 # --------------------- SORTING ------------------------------ #
 
 PreSort:                            # preparo i registri per la chiamata a insertionSort
@@ -145,14 +139,64 @@ SecondSort:                         # chiama la funzione EqualSort che controlla
 
 # --------------------- OUTPUT ------------------------------- #
 
-CheckOutputFile:
+
+CallArrayToBuffer: 
+
+# preparo i registri per la chiamata ad Array To Buffer: 
+
+
+    movl choice, %eax                 # sposto choice in eax
+    movl (ArrayPointer), %esi         # sposto l'indirizzo di ArrayPointer in esi
+    movl len, %edi                      # sposto len in edi
+    movl $buffer, %ecx              # sposto l'indirizzo di buffer in ecx
+    call ArrayToBuffer              # chiama la funzione ArrayToBuffer
+
+
+
+# Dopo ArrayToBuffer ho buffer. ovvero una parte di memoria in cui ho ciò che va scritto su file e stampato a video in ascii...
+
+    PrintVideo:
+    movl $4, %eax                   # Write file
+    movl $1, %ebx                   # File descriptor 1 (stdout)
+    movl $buffer, %ecx              # Indirizzo della stringa da stampare
+    movl bufferLen, %edx            # Lunghezza della stringa
+    int $0x80
 
     cmpl $0, OutputFile             # check se OutputFile è stato definito
-    je MissingOutputFilePath        # se non è stato definito salta la scrittura su file
+    je AskForNewJob                 # se non è stato definito salta la scrittura su file
 
-    jmp ElaborazioneOut           # se OutputFile è stato definito va a ElaborazioneOut
+OpenOutputFile:                 # Apro il file di output
 
-MissingOutputFilePath:
+    # Apro il file di output
+    movl $5, %eax                   # Open file
+    movl OutputFile, %ebx           # path
+    movl $65, %ecx                  # Write or create
+    movl $0x1A4, %edx               # RWX
+
+    int $0x80
+
+    cmpl $0, %eax             # check se OutputFile è stato definito
+    je NoOutputFileMSG              # se non è stato definito salta la scrittura su file
+
+
+    movl %eax, fd
+    
+
+WriteOutputFile:                # Scrivo su file
+    
+
+    movl $4, %eax                   # Write file
+    movl fd, %ebx                   # File descriptor 1 (stdout)
+    movl $buffer, %ecx              # Indirizzo della stringa da stampare
+    # movl bufferLen, %edx            # Lunghezza della stringa
+
+# SCRIBVO SU FILE. . . . . .. . . .
+
+# QUA SI SCRIVE SU FILE1!!!!1!1!11
+
+# , , , , , , , 
+
+NoOutputFileMSG:
     # Stampo un avviso di errore:
     movl $4, %eax                           # Write file
     movl $2, %ebx                           # File descriptor 2 (stderr)
@@ -161,87 +205,7 @@ MissingOutputFilePath:
     int $0x80
 
 
-
-    movl ArrayPointer, %esi         # sposto l'indirizzo di ArrayPointer in esi
-    movl len, %edi                  # sposto len in edi
-    movl choice, %eax                   # sposto choice in eax
-    jmp CallArrayToBuffer               # Salto ad ArrayToBuffer e bypasso la scrittura su file
-
-
-ElaborazioneOut:
-
-    movl $5, %eax                   # Open file
-    movl OutputFile, %ebx           # path
-    movl $65, %ecx                  # Write or create
-    movl $0x1A4, %edx               # RWX
-
-    int $0x80
-
-    movl %eax, fd
-
-    # preparazione alla chiamata che sposta i dati da ArrayPointer a buffer
-    # mi serve :
-    # - ArrayPointer
-    # - len dell'array
-    # - buffer pointer
-    # la scelta del sorting (base) da mettere in eax
-
-
-
-    movl choice, %eax                 # sposto choice in eax
-    movl (ArrayPointer), %esi         # sposto l'indirizzo di ArrayPointer in esi
-    movl len, %edi                  # sposto len in edi
-    movl $buffer, %ecx              # sposto l'indirizzo di buffer in ecx
-    jmp CallArrayToBuffer              # chiama la funzione ArrayToBuffer
-
-
-CallArrayToBuffer: 
-    call ArrayToBuffer              # chiama la funzione ArrayToBuffer
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-FineElaborazione:                    # chiama la funzione FineElaborzione
-# stampo a video il buffer fino a buffer len
-    movl $4, %eax                   # Write file
-    movl $1, %ebx                   # File descriptor 1 (stdout)
-    movl $buffer, %ecx              # Indirizzo della stringa da stampare
-    movl bufferLen, %edx            # Lunghezza della stringa
-    int $0x80
-
-
-# chiedo all'utente se vuole terminare il programma o se vuole eseguire una nuova pianificazione:
-# 0 -> termina il programma
-# 1 -> esegue una nuova pianificazione
+AskForNewJob:
 
     movl $4, %eax                   # Write file
     movl $1, %ebx                   # File descriptor 1 (stdout)
@@ -262,11 +226,6 @@ FineElaborazione:                    # chiama la funzione FineElaborzione
     je PrepareForBackMenu
 
 PrepareForBackMenu:
-
-    xorl %eax, %eax                 # pulisce eax
-    xorl %ebx, %ebx                 # pulisce ebx
-    xorl %ecx, %ecx                 # pulisce ecx
-    xorl %edx, %edx                 # pulisce edx
 
     jmp PreSort                     # ritorna a PreSort (Menu)
 

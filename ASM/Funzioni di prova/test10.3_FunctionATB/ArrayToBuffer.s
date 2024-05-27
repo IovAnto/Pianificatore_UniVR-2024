@@ -56,9 +56,9 @@ EDF:
     movl EDFstringLen, %ecx             # lunghezza della stringa
     cld                                 # clear direction flag
     LoopPreEDF:
-        lodsb
-        stosb
-        loop LoopPreEDF
+        lodsb                           # load from esi
+        stosb                           # store to edi
+        loop LoopPreEDF                 # decrementa ecx ed esegue loop
     movl %edi, BufferPosition           # Backup Posizione corrente nel buffer
 
     jmp ArrayEDF
