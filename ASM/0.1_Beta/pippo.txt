@@ -1,0 +1,13 @@
+Pianificazione EDF:
+3:0
+9:1
+6:16
+5:17
+2:27
+1:30
+7:40
+8:44
+10:46
+4:50
+Conclusione: 55
+Penalty: 29
