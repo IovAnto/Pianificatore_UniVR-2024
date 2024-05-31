@@ -17,7 +17,7 @@ choice: .byte 0                     # la scelta della pianificazione EDF - HPF
 ErrorString: .asciz "Errore interno.\n"
 ErrorStringLen = . - ErrorString
 
-MsgMissingOutputFilePath: .asciz "\n\n\nAvviso: non è stato definito il file di output!.\n"
+MsgMissingOutputFilePath: .asciz "\n\n\n\tAvviso: non è stato definito il file di output!\n"
 MsgMissingOutputFilePathLen = . - MsgMissingOutputFilePath
 
 
@@ -26,6 +26,9 @@ MsgAskForNewJobLen = . - MsgAskForNewJob
 
 MsgInputError: .asciz "Errore nell'apertura del file di input\n"
 MsgInputErrorLen = . - MsgInputError
+
+MsgExitProgram: .asciz "\n\nChiusura programma.\n"
+MsgExitProgramLen = . - MsgExitProgram
 
 
 
@@ -71,8 +74,8 @@ CallAskInput:
     call AskInput
 
     # mi ritorna 0 in %EAX se voglio uscire, il file descriptor altrimenti..
-    cmpl $0, %eax               # check stdin
-    je Exit                     # se non c'è niente esce
+    cmpl $0, %eax
+    je Exit      
 
     movl %eax, fd
     jmp ReadFile
@@ -277,13 +280,13 @@ PrintVideo:
     movl bufferLen, %edx            # Lunghezza della stringa
     int $0x80
 
-    cmpl $0, OutputFile             # check se OutputFile è stato definito
-    je AskForNewJob                 # se non è stato definito salta la scrittura su file
-
 
 OpenOutputFile:                 # Apro il file di output
 
     # Apro il file di output
+    cmpl $0, OutputFile             # check se OutputFile è stato definito
+    je NoOutputFileMSG              # se non è stato definito salta la scrittura su file
+    
     movl $5, %eax                   # Open file
     movl OutputFile, %ebx           # path
     movl $65, %ecx                  # Write or create
@@ -364,7 +367,16 @@ PrepareForBackMenu:
 
 # ------------------ Uscite ed errori -------------------------- #
 
-Exit:                       # uscita con successo        
+Exit:                       # uscita con successo      
+
+    #stampo un messaggio di uscita
+    movl $4, %eax                   # Write file
+    movl $1, %ebx                   # File descriptor 1 (stdout)
+    movl $MsgExitProgram, %ecx      # Indirizzo della stringa da stampare
+    movl $MsgExitProgramLen, %edx   # Lunghezza della stringa
+    int $0x80
+
+
     movl $1, %eax                   # Exit with 0
     movl $0, %ebx
     int $0x80

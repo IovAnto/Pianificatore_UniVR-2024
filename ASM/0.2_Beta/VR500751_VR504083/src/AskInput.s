@@ -7,6 +7,7 @@ MsgBadInputFileLen = . - MsgBadInputFile
 MsgAskForInputFile: .asciz "\nInserire il path del file di input:\t"
 MsgAskForInputFileLen = . - MsgAskForInputFile
 
+
 FPlength: .int 0
 filepath: .string ""
 
@@ -36,7 +37,7 @@ AskInput:
     int $0x80
 
     # Confronta l'input con '0'
-    cmpb $'0', UserChoice
+    cmpb $48, UserChoice
     je ExitProgram
 
     # Confronta l'input con '1'
@@ -95,11 +96,21 @@ AskFilePath:
     ret
 
 ExitProgram:
-    # Codice per uscire dal programma
-    movl $1, %eax                   # Exit system call
-    xorl %ebx, %ebx                 # Exit code 0
-    int $0x80
-
+#
+#   movl $4, %eax                   # Write file
+#   movl $2, %ebx                   # File descriptor 2 (stderr)
+#   movl $MsgExitProgram, %ecx      # Indirizzo della stringa da stampare
+#   movl $MsgExitProgramLen, %edx   # Lunghezza della stringa
+#   int $0x80
+#
+#
+#   # Codice per uscire dal programma
+#   movl $0, %eax                   # Exit system call
+#   xorl %ebx, %ebx                 # Exit code 0
+#   int $0x80
+#
+    movl $0, %eax
+    ret
 ErrorInput:
     movl $1, %eax           # Exit with 1 [error]
     movl $1, %ebx
