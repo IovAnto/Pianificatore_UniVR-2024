@@ -32,7 +32,7 @@
 
 \lstset{
   firstnumber=1,                % start line enumeration with line 1000
-  language=Verilog,
+  language=fortran,
   numbers=left,
   stepnumber=1,
   numbersep=4pt,
@@ -184,77 +184,78 @@ A completare la struttura del programma, sono presenti i seguenti file di suppor
 
 \subsection{Analisi di alcune parti fondamentali del codice}
 
-\begin{lstlisting}[firstnumber=34]
-  Codice in ASM!!!
-  int main pippo VOID !!!
-  ; Gibberish Assembly Code
-  mov eax, 0
-  add ebx, eax
-  sub ecx, ebx
-  
-  mul edx, ecx
-  div  
-  nop
-  cmp eax, ebx
-  jne label
+\subsubsection{Acqusizione degli argomenti da linea di comando 'src/main.s':}
+\begin{lstlisting}[firstnumber=38]
+
+  _start:                         # inizio del programma   
+    
+    popl %eax                     # pop counter
+    popl %eax                     # pop nome programma 'Pianificatore'
+    popl InputFile                # pop nome file input (primo argomento)
+    popl OutputFile               # pop nome file output (secondo argomento)
+
+    
+    ...
+    
 \end{lstlisting}
+     
 
-\begin{lstlisting}[firstnumber=343]
 
-ul edx, ecx
-  div esi, edx
-  push eax
-  pop ebx
-  inc ecx
-  dec edx
-  jmp label
-  label:l edx, ecx
-  div esi, edx
-  push eax
-  pop ebx
-  inc ecx
-  dec edx
-  jmp label
-  label:l edx, ecx
-  div esi, edx
-  push eax
-  pop ebx
-  inc ecx
-  dec edx
-  jmp label
-  label:l edx, ecx
-  div esi, edx
-  push eax
-  pop ebx
-  inc ecx
-  dec edx
-  jmp label
-  label:l edx, ecx
-  div esi, edx
-  push eax
-  pop ebx
-  inc ecx
-  dec edx
-  jmp label
-  label:l edx, ecx
-  div esi, edx
-  push eax
-  pop ebx
-  inc ecx
-  dec edx
-  jmp label
-  label:
-  nop
-  cmp eax, ebx
-  jne label
-  sub ecx, ebx
-  mul edx, ecx
-  div esi, edx
-!
+\subsubsection{Allocazione della memoria dinamica per la lettura dei dati 'src/main.s':}
+\begin{lstlisting}[firstnumber=91]
 
-  sub ecx, ebx
+  SpaceLoop:                        # conta quante volte c'è '\n' in buffer
+        
+    cmpb $0, (%esi)                 # se trova '\0' esce dal ciclo
+    je malloc                       # e va a malloc
+    
+    cmpb $10, (%esi)                # se trova '\n' incrementa len
+    je lenPlus  
+    
+    incl %esi                       # incrementa puntatore (per ciclare su buffer)
+    jmp SpaceLoop   
+    
+lenPlus:                            # incrementa len e puntatore
+    incl len                        # e torna a spaceLoop
+    incl %esi   
+    jmp SpaceLoop   
+    
+malloc:                             # alloca spazio per l'array
 
-  \end{lstlisting}
+    movl len, %eax
+    sal $2, %eax                    # moltiplico per 4 (4byte per int) (perchè ho 4byte ogni riga/prodotto)     
+    movl %eax, len
+
+
+    movl $45, %eax                  # syscall per la malloc
+    xorl %ebx, %ebx                 # alloco inizialmente 0byte
+    int $0x80   
+    
+    movl %eax, %esi                 # salvo l'indirizzo di memoria in esi (zona di memoria puntata dalla malloc)
+    
+    addl len, %eax                  # aggiungo len a %eax (buffer allocazione)
+                                                              
+    
+    
+    movl %eax, %ebx                 # salvo il risultato in ebx (lunghezza totale da allocare)
+    movl $45, %eax                  # syscall per la malloc
+    int $0x80                       # alloco la memoria - interrupt
+    
+    cmpl %esi, %eax                 # compara nuovo puntatore col vecchio (se sono uguali non ha allocato)
+    jle Error                       # esi è l'indirizzo di memoria puntato dalla malloc (inizio array) mentre in eax c'è l'indirizzo di fine array
+    
+    movl %esi, ArrayPointer         # se tutto funziona salvo l'indirizzo di memoria in ArrayPointer cosi lo posso usare in BufferToArray
+    
+PrepArr:                            # preparo i registri per la chiamata a BufferToArray
+    
+    movl $buffer, %esi              # muove l'indirizzo di buffer in esi (source)
+    movl ArrayPointer, %edi        # muove l'indirizzo di ArrayPointer in edi (target)
+    
+    call BufferToArray              # chiama la funzione BufferToArray
+
+    ...
+
+\end{lstlisting}
 
 
 \end{document}

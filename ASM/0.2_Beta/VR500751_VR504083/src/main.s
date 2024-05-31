@@ -88,15 +88,15 @@ FileClose:                          # chiudo il file, non serve più e tutto il 
 
     movl $buffer, %esi              # sposto puntatore all'inizio di buffer in esi
     
-SpaceLoop:                          # conta quante volte c'è '\n' in buffer
+SpaceLoop:                          # conta il numero di rientri '\n' in buffer
         
     cmpb $0, (%esi)                 # se trova '\0' esce dal ciclo
-    je malloc                       # e va a malloc
+    je malloc                       # salto a malloc
     
-    cmpb $10, (%esi)                # se trova '\n' incrementa len
+    cmpb $10, (%esi)                # incremento len se trova '\n'
     je lenPlus  
     
-    incl %esi                       # incrementa puntatore (per ciclare su buffer)
+    incl %esi                       # incrementa puntatore (per eseguire ciclo su buffer)
     jmp SpaceLoop   
     
 lenPlus:                            # incrementa len e puntatore
