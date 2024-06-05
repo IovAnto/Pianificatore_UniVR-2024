@@ -49,8 +49,6 @@ Esempio:
 
 ### Struttura file
 
-La struttura della cartella dovrà essere la seguente, pena la non ammissibilità dell’elaborato:
-
 - > VRXXXXXX_VRXXXXXX/
    - > s**rc/**
    - > **obj**/ (vuota)
@@ -61,19 +59,20 @@ La struttura della cartella dovrà essere la seguente, pena la non ammissibilit�
       - > **HPF**.txt
       - > **Both**.txt
       - > **None**.txt
-- > R**elazione.**pdf
+- > **Relazione.**pdf
 
 ----
 
 > > # TODO:
 
-- [ ] C*     **→ WIP**
-- [ ] Scheletro ASM
-- [ ] Definizione REG
-   - [ ] > > Quante parole per info
-   - [ ] > > Quanti reg?
-- [ ] Definizione algorimto di sorting*
-- [ ] Scrittura dei test
-- [ ] Stesura macchinosa del file ASM
-- [ ] Testing (GPT?)
-- [ ] Consegna 🎉🥳🎊🎈
+- [X] C*     **→ WIP**
+- [X] Scheletro ASM
+- [X] Definizione REG
+   - [X] > > Quante parole per info
+   - [X] > > Quanti reg?
+- [X] Definizione algorimto di sorting*
+- [X] Scrittura dei test
+- [X] Stesura macchinosa del file ASM
+- [X] Testing (GPT?)
+- [X] Consegna 🎉🥳🎊🎈
+- [ ] GUI 
