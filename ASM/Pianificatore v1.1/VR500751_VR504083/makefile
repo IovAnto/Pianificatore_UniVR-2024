@@ -16,7 +16,7 @@ OBJ_DIR = ./obj
 SRC_DIR = ./src
 
 EXE = $(EXE_DIR)/Pianificatore
-AS = as --32  -gstabs # -gstabs da commentare prima della consegna
+AS = as --32  # -gstabs -gstabs da commentare prima della consegna
 LD = ld -m elf_i386
 OBJ = $(OBJ_DIR)/BufferToArray.o $(OBJ_DIR)/main.o $(OBJ_DIR)/btoa.o $(OBJ_DIR)/insertionSort.o $(OBJ_DIR)/menu.o $(OBJ_DIR)/EqualSort.o $(OBJ_DIR)/Intestazione.o $(OBJ_DIR)/FinalData.o $(OBJ_DIR)/AskInput.o $(OBJ_DIR)/AskOutput.o $(OBJ_DIR)/TextIn.o
 
