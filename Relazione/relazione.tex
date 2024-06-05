@@ -15,13 +15,27 @@
 \usepackage{multirow}
 \usepackage{float}
 \usepackage{array}
+\usepackage{dirtree}
 \usepackage{afterpage}
+\usepackage{enumitem}
 
+\usepackage{fancyvrb}
+
+% Define custom verbatim settings
+\DefineVerbatimEnvironment{myverbatim}{Verbatim}{%
+  frame=single, % Add a frame around the verbatim text
+  framesep=10pt, % Set the separation between the frame and the text
+  rulecolor=\color{grigio}, % Set the color of the frame
+  fontsize=\small, % Set the font size of the verbatim text
+  commandchars=\\\{\} % Allow special characters to be escaped with backslash
+}
+
+
+\setlist[itemize]{label=$\bullet$, leftmargin=0.3cm, itemsep=0.2em}
 \usepackage[font={small}, labelfont={bf}, format=hang, skip=8pt]{caption}
 
-
+\setmonofont{IBM Plex Mono} % Set the monospaced font to IBM Plex Mono
 \setmainfont{Helvetica} % Set the main font to Helvetica
-\setmonofont{Noto Sans Mono} % Set the monofont to Andale Mono
 
 % Imposta lo spacing tra il titolo del paragrafo e il testo successivo
 \usepackage[left=3.6cm,right=3.6cm,top=2.5cm,bottom=2.25cm]{geometry}
@@ -92,24 +106,21 @@ La produzione è organizzata in slot temporali uniformi, durante i quali un solo
 Al termine della pianificazione, il programma calcolerà la penale dovuta agli eventuali ritardi di produzione.
 
 \subsection{Input}
-L'utente invoca il programma "pianificatore" e fornisce due file come parametri da linea di comando, il primo viene considerato input, mentre il secondo viene utilizzato per salvare i risultati della pianificazione. Ad esempio:
-
-\begin{verbatim}
-pianificatore Ordini.txt Pianificazione.txt
-\end{verbatim}
-
-In questo caso, il programma caricherà gli ordini dal file \texttt{Ordini.txt} e salverà le statistiche stampate a video nel file \texttt{Pianificazione.txt}.
-
+L'utente invoca il programma "pianificatore" e fornisce due file come parametri da linea di comando, il primo viene considerato input, mentre il secondo viene utilizzato per salvare i risultati della pianificazione. Ad esempio:q\
+\begin{myverbatim}
+./Pianificatore Ordini.txt output.txt
+\end{myverbatim}
+In questo caso, il programma caricherà gli ordini dal file \texttt{Ordini.txt} e salverà le statistiche stampate a video nel file \texttt{output.txt}.
 Se l'utente fornisce solo un parametro, il salvataggio della pianificazione su file verrà ignorato.
 
 Il file degli ordini dovrà avere un prodotto per riga, con tutti i parametri separati da virgola. Ad esempio, se l'ordine fosse:
-\begin{verbatim}
+\begin{myverbatim}
 ID: 4; Durata: 10; Scadenza: 12; Priorità: 4;
-\end{verbatim}
+\end{myverbatim}
 Il file dovrà contenere la seguente riga:
-\begin{verbatim}
+\begin{myverbatim}
 4,10,12,4
-\end{verbatim}
+\end{myverbatim}
 
 \subsection{Algoritmi di pianificazione}
 Una volta letto il file, il programma visualizzerà il menu principale, permettendo all'utente di selezionare l'algoritmo di pianificazione desiderato. Le opzioni disponibili sono:
@@ -126,7 +137,7 @@ L'utente può selezionare uno dei due algoritmi per la pianificazione delle atti
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{scheme.png}
-  \caption{Schema del funzionamento del software.}
+  \caption{Schema base del funzionamento del software. [alcune funzionalità sono state omesse per leggibilità dello schema.]}
   \label{fig:schema}
 \end{figure}
 
@@ -142,13 +153,29 @@ Il secondo ordinamento, ovvero quello che compara il parametro "scadenza" in cas
 
 \subsection{Output}
 Nel caso venisse specificato un file di output, il software stamperà su di esso i risultati della pianificazione secondo il seguente schema:
-\begin{verbatim}
+
+
+\begin{myverbatim}
 <Algoritmo di pianificazione scelto>:
 <ID del prodotto>:<Inizio produzione>
 [...]
 Conclusione:<timeslot termine produzione>
 Penalty:<penalità totale>
-\end{verbatim}
+\end{myverbatim}
+
+
+\small{Esempio:}
+
+\begin{myverbatim}
+Pianificazione EDF:
+1:0
+4:2
+\dots
+9:55
+Conclusione: 63
+Penalty: 0
+  \end{myverbatim}
+L'output della pianificazione viene comunque visualizzato a video.
 
 \subsection{Penalità}
 Se un prodotto non viene completato entro la scadenza, il programma calcola la penalità in base alla priorità del prodotto e alla quantità di slot temporali di ritardo. La penalità è calcolata come segue:
@@ -157,105 +184,86 @@ Se un prodotto non viene completato entro la scadenza, il programma calcola la p
 \text{Penalità} = \text{Priorità} \times \text{Ritardo}
 \]
 
-
+\newpage
 \section{Codice}
 
+\subsection{Struttra della cartella di progetto}
 
-\subsection{File sorgente}
+\dirtree{%
+.1 VR500751\_VR504083.
+.2 bin.
+  .3 *Pianificatore*.
+.2 obj.
+.2 Ordini.
+  .3 EDF.txt.
+  .3 NONE.txt.
+  .3 BOTH.txt.
+.2 src.
+  .3 AskInput.s.
+  .3 AskOutput.s.
+  .3 btoa.s.
+  .3 BufferToArray.s.
+  .3 EqualSort.s.
+  .3 FinalData.s.
+  .3 InsertionSort.s.
+  .3 Intestazione.s.
+  .3 menu.s.
+  .3 main.s.
+  .3 textin.s.
+.2 Makefile.
+}
 
-\subsubitem{Il programma è composto dai seguenti file sorgente in linguaggio assembly:}
+\subsection{File sorgenti}
+
+Il programma è composto dai seguenti file sorgente in linguaggio assembly:
 \begin{itemize}
   \item \texttt{btoa.s}: byte to ASCII, funzione per la conversione di un byte in ASCII;
-  \item \texttt{BufferToArray.s}: funzione per la conversione del buffer di lettura in un array di struct;
+  \item \texttt{BufferToArray.s}: funzione per la conversione del buffer di lettura in un array di struct \begin{myverbatim}
+    struct: [ID:1B - TEMPO:1B - SCADENZA:1B - PRIORITÀ:1B] = 4byte;
+  \end{myverbatim}
   \item \texttt{InsertionSort.s}: funzione per il primo ordinamento dei prodotti;
   \item \texttt{EqualSort.s}: funzione per il secondo ordinamento dei prodotti;
-  \item \texttt{menu.s}: file contenente la funzione per il menù.
+  \item \texttt{menu.s}: file contenente la funzione per l'invocazione del menù utente.
   \item \texttt{main.s}: funzione principale del programma.
 \end{itemize}
 
-A completare la struttura del programma, sono presenti i seguenti file di supporto:
+A completare la struttura del programma, sono presenti i seguenti file per la compilazione ed il testing del software:
 \begin{itemize}
   \item \texttt{Makefile}: file per la compilazione del programma;
   \item \texttt{EDF.txt}: file di input con penalità uguale a zero con EDF e maggiore di zero con HPF;
-  \item \texttt{HPF.txt}: file di input con penalità uguale a zero con HPF e maggiore di zero con EDF;
-  \item \texttt{Both.txt}: file di input con penalità uguale a zero con entrambi gli algoritmi;
-  \item \texttt{None.txt}: file di input con penalità maggiore di zero con entrambi gli algoritmi.
+  \item \texttt{BOTH.txt}: file di input con penalità uguale a zero con entrambi gli algoritmi;
+  \item \texttt{NONE.txt}: file di input con penalità maggiore di zero con entrambi gli algoritmi.
 \end{itemize}
 
-\subsection{Analisi di alcune parti fondamentali del codice}
+\section{Scelte progettuali}
 
-\subsubsection{Acqusizione degli argomenti da linea di comando 'src/main.s':}
-\begin{lstlisting}[firstnumber=38]
+  \subsection{Ouput su file / funzioni extra-specifiche}
+  Durante la programmazione del software sono state implementate alcune funzionalità aggiuntive:
+    \begin{itemize}
+      \item Salvataggio dei risultati della pianificazione su file;
+      \item Visualizzazione del menù utente multi-scelta;
+      \item Possibilità di lanciare il software senza specificare un file di output.
+      \item Modifica a runtime di file di input e output.
+      \item Visualizzazione di un messaggio di errore nel caso di file di output non non specificato.
+    \end{itemize}
 
-  _start:                         # inizio del programma   
-    
-    popl %eax                     # pop counter
-    popl %eax                     # pop nome programma 'Pianificatore'
-    popl InputFile                # pop nome file input (primo argomento)
-    popl OutputFile               # pop nome file output (secondo argomento)
+  \subsection{Algoritmi di sorting}
+  Per l'ordinamento dei prodotti, sono stati implementati due algoritmi di sorting differenti:
 
+    \begin{itemize}
+      \item \texttt{Sorting principale}: ordinamento basato su algoritmo 'insertion sort' per il confronto diretto tra il valore indicato dalla tipologia di pianificazione (EDF: deadline, HPF: priorità);
+      \item \texttt{Sorting secondario}: ordinamento secondario basato su algoritmo di tipo 'bubble sort' per il confronto in caso di valore principale identico.
+    \end{itemize}
     
-    ...
-    
-\end{lstlisting}
-     
+    \subsection{Limiti del software}
+    Durante la fase di testing sono sorte alcune limitazioni del software:
 
+      \begin{itemize}
+        \item Il software non è in grado di gestire generalmete prodotti con valori maggiori di 256;
+        \item Il software non è in grado di gestire file di input con più di 256 slot temporali;
+        \item Il software non è in grado di gestire file di input aventi dimensione maggiore di 1024kB.
+      \end{itemize}
 
-\subsubsection{Allocazione della memoria dinamica per la lettura dei dati 'src/main.s':}
-\begin{lstlisting}[firstnumber=91]
-
-  SpaceLoop:                        # conta quante volte c'è '\n' in buffer
-        
-    cmpb $0, (%esi)                 # se trova '\0' esce dal ciclo
-    je malloc                       # e va a malloc
-    
-    cmpb $10, (%esi)                # se trova '\n' incrementa len
-    je lenPlus  
-    
-    incl %esi                       # incrementa puntatore (per ciclare su buffer)
-    jmp SpaceLoop   
-    
-lenPlus:                            # incrementa len e puntatore
-    incl len                        # e torna a spaceLoop
-    incl %esi   
-    jmp SpaceLoop   
-    
-malloc:                             # alloca spazio per l'array
-
-    movl len, %eax
-    sal $2, %eax                    # moltiplico per 4 (4byte per int) (perchè ho 4byte ogni riga/prodotto)     
-    movl %eax, len
-
-
-    movl $45, %eax                  # syscall per la malloc
-    xorl %ebx, %ebx                 # alloco inizialmente 0byte
-    int $0x80   
-    
-    movl %eax, %esi                 # salvo l'indirizzo di memoria in esi (zona di memoria puntata dalla malloc)
-    
-    addl len, %eax                  # aggiungo len a %eax (buffer allocazione)
-                                                              
-    
-    
-    movl %eax, %ebx                 # salvo il risultato in ebx (lunghezza totale da allocare)
-    movl $45, %eax                  # syscall per la malloc
-    int $0x80                       # alloco la memoria - interrupt
-    
-    cmpl %esi, %eax                 # compara nuovo puntatore col vecchio (se sono uguali non ha allocato)
-    jle Error                       # esi è l'indirizzo di memoria puntato dalla malloc (inizio array) mentre in eax c'è l'indirizzo di fine array
-    
-    movl %esi, ArrayPointer         # se tutto funziona salvo l'indirizzo di memoria in ArrayPointer cosi lo posso usare in BufferToArray
-    
-PrepArr:                            # preparo i registri per la chiamata a BufferToArray
-    
-    movl $buffer, %esi              # muove l'indirizzo di buffer in esi (source)
-    movl ArrayPointer, %edi        # muove l'indirizzo di ArrayPointer in edi (target)
-    
-    call BufferToArray              # chiama la funzione BufferToArray
-
-    ...
-
-\end{lstlisting}
 
 
 \end{document}
