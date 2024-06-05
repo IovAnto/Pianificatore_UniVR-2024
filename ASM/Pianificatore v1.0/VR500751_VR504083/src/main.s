@@ -234,7 +234,7 @@ Buffering:
 
     call btoa
 
-    addb %cl, bufferLen
+    addl %ecx, bufferLen
     popl %ecx # Riprendo la posizione
     popl %ebx # Riprendo l'oggetto
 
