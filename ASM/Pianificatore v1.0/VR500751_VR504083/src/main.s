@@ -48,7 +48,19 @@ MsgExitProgramLen = . - MsgExitProgram
 _start:                             # inizio del programma   
     
     popl %eax 
-    popl %eax 
+    popl %ebx 
+
+    cmpl $1, %eax
+    je CallAskInput
+
+    cmpl $3, %eax
+    jge takeOutput
+
+    popl InputFile
+    jmp OpenInputFile
+
+takeOutput:
+
     popl InputFile
     popl OutputFile
     # ----- Apro il file ----- #
