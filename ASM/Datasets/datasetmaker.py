@@ -1,9 +1,12 @@
 import random
 
 def generate_product(id_product):
-    duration = random.randint(1, 10)
-    deadline = random.randint(1, 100)
-    priority = random.randint(1, 5)
+    while True:
+        duration = random.randint(1, 10)
+        deadline = random.randint(1, 100)
+        priority = random.randint(1, 5)
+        if duration + deadline <= 100:
+            break
     return (id_product, duration, deadline, priority)
 
 def calculate_penalty(products, order):

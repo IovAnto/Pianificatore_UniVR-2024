@@ -7,7 +7,7 @@
 124,10,3,3
 123,7,4,3
 31,6,4,1
-15,3,5,2/home/tonio/VSCODE/Elaborato_Assembly2024/ASM/Datasets/05_loooong/EDF_127.txt
+15,3,5,2
 119,9,6,3
 77,3,7,4
 105,5,10,3
