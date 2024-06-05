@@ -217,17 +217,21 @@ Se un prodotto non viene completato entro la scadenza, il programma calcola la p
 
 Il programma è composto dai seguenti file sorgente in linguaggio assembly:
 \begin{itemize}
-  \item \texttt{btoa.s}: byte to ASCII, funzione per la conversione di un byte in ASCII;
-  \item \texttt{BufferToArray.s}: funzione per la conversione del buffer di lettura in un array di struct \begin{myverbatim}
-    struct: [ID:1B - TEMPO:1B - SCADENZA:1B - PRIORITÀ:1B] = 4byte;
-  \end{myverbatim}
-  \item \texttt{InsertionSort.s}: funzione per il primo ordinamento dei prodotti;
+  \item \texttt{AskInput.s}: funzione per richiedere il nome del file di input all'utente;
+  \item \texttt{AskOutput.s}: funzione per richiedere il nome del file di output all'utente;
+  \item \texttt{textin.s}: funzione per la lettura di una scelta da tastiera.
+  \item \texttt{btoa.s}: funzione loop per la conversione di un byte in ASCII;
+  \item \texttt{BufferToArray.s}: funzione per la conversione del buffer di lettura in un array di struct;
   \item \texttt{EqualSort.s}: funzione per il secondo ordinamento dei prodotti;
-  \item \texttt{menu.s}: file contenente la funzione per l'invocazione del menù utente.
-  \item \texttt{main.s}: funzione principale del programma.
-\end{itemize}
+  \item \texttt{FinalData.s}: funzione per la stampa dei risultati della pianificazione;
+  \item \texttt{InsertionSort.s}: funzione per il primo ordinamento dei prodotti;
+  \item \texttt{Intestazione.s}: scrittura dell'intestazione condizionale dell'output del programma;
+  \item \texttt{menu.s}: file contenente la funzione per l'invocazione del menù utente;
+  \item \texttt{main.s}: funzione principale del programma;
+  
 
-A completare la struttura del programma, sono presenti i seguenti file per la compilazione ed il testing del software:
+  
+\end{itemize}
 \begin{itemize}
   \item \texttt{Makefile}: file per la compilazione del programma;
   \item \texttt{EDF.txt}: file di input con penalità uguale a zero con EDF e maggiore di zero con HPF;
