@@ -74,5 +74,5 @@ Esempio:
 - [X] Scrittura dei test
 - [X] Stesura macchinosa del file ASM
 - [X] Testing (GPT?)
-- [X] Consegna 🎉🥳🎊🎈
+- [X] V1
 - [ ] GUI 
