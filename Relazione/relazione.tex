@@ -45,25 +45,28 @@
 \definecolor{mygreen}{rgb}{0.2,0.4,0.2}
 
 \lstset{
-  firstnumber=1,                % start line enumeration with line 1000
-  language=fortran,
-  numbers=left,
-  stepnumber=1,
-  numbersep=4pt,
-  numberstyle=\tiny\color{mygrey}, % the style that is used for the line-numbers
-  backgroundcolor=\color{grigio},
-  showspaces=false,
-  showstringspaces=false,
-  showtabs=false,
-  tabsize=3,
-  captionpos=b,
-  breaklines=true,
-  breakatwhitespace=true,
-  escapeinside={\%*}{*)},
-  basicstyle=\ttfamily\fontsize{8pt}{10pt}\selectfont, % Set the basic code style to a smaller font
-  keywordstyle=\bfseries,
-  commentstyle=\color{mygreen}
+    firstnumber=1,                % start line enumeration with line 1000
+    numbers=left,
+    stepnumber=1,
+    numbersep=4pt,
+    numberstyle=\tiny\color{mygrey}, % the style that is used for the line-numbers
+    backgroundcolor=\color{grigio},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=3,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=true,
+    basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries\color{blue},  % Stile per i comandi (mov, movb, ...)
+  morekeywords={movl, movb, jmp, call},  % Aggiunta dei comandi principali
+  commentstyle=\color{mygreen},  % Stile per i commenti
+  morecomment=[l]{\#},  % Commenti di una riga che iniziano con #
+    moredelim=[il][\color{blue}]{:},  % Etichette
+    morekeywords={movl, movb, jmp, call, .byte, jl, addl, addb, decl, dec, jge, jle, cmpb, cmpl, addl,  .int, .ascii, .asciz, .string, jle, je, jz, jg}
 }
+
 
 \titleformat{\chapter}[display]
 {\normalfont\huge\bfseries\fontsize{14pt}{10pt}\selectfont}{\chaptertitlename\ \thechapter}{18pt}{\Huge}
@@ -231,6 +234,412 @@ Se un prodotto non viene completato entro la scadenza, il programma calcola la p
 \end{itemize}
 \
 
+\subsubsection{Alcuni stralci di codice significativi:}
+
+  \begin{itemize}
+    \item Allocazione della memoria \texttt{main.s}:
+    \begin{lstlisting}[firstnumber=130]
+    malloc:                 # alloca spazio per l'array
+
+    movl len, %eax
+    sal $2, %eax            # moltiplico per 4 (4byte per int) (perchè ho 4byte ogni riga/prodotto)     
+    movl %eax, len
+
+    movl $45, %eax          # syscall per la malloc
+    xorl %ebx, %ebx         # alloco inizialmente 0byte
+    int $0x80   
+    
+    movl %eax, %esi         # salvo l'indirizzo di memoria in esi (zona di memoria puntata dalla malloc)
+    
+    addl len, %eax          # aggiungo len a %eax (buffer allocazione)
+                                                              
+    movl %eax, %ebx         # salvo il risultato in ebx (lunghezza totale da allocare)
+    movl $45, %eax          # syscall per la malloc
+    int $0x80               # alloco la memoria - interrupt
+    
+    cmpl %esi, %eax         # compara nuovo puntatore col vecchio (se sono uguali non ha allocato)
+    jle Error               # esi è l'indirizzo di memoria puntato dalla malloc (inizio array) mentre in eax c'è l'indirizzo di fine array
+    
+    movl %esi, ArrayPointer # se tutto funziona salvo l'indirizzo di memoria in ArrayPointer cosi lo posso usare in BufferToArray
+    
+    \end{lstlisting}
+    
+    \item Insertion sort \texttt{insertionSort.s}:
+    \begin{lstlisting}[firstnumber=130]
+      .section .data
+
+    key: .int 0
+    base: .int 0
+
+.section .text 
+    .global insertionSort
+    .type insertionSort, @function
+
+insertionSort:
+
+    pushl %ebp
+    movl %esp, %ebp
+
+    movl 8(%ebp), %edi # edi = Arr[fine]
+    movl 12(%ebp), %esi # esi = Arr[inizio]
+    movl 16(%ebp), %ecx # Metodo di sorting (+3 Priorità, +2 Scadenza)
+
+    popl %ebp
+
+    movl %ecx, base
+
+    xorl %ecx, %ecx # i = 0
+    xorl %edx, %edx # j = 0
+    addl base, %ecx # %ecx punta alla priorità/scadenza 
+    addl $4, %ecx  # %punta a 2 oggetto (1)
+
+for:
+
+    cmpl %ecx, %edi
+    jle endFor
+
+    movl (%esi, %ecx, 1), %eax
+    movb %al, key 
+    subl base, %ecx
+    movl (%esi, %ecx, 1), %eax
+    push %eax
+    addl base, %ecx
+
+    movl %ecx, %edx # j = i
+    addl $-4, %edx # j = i - 1
+
+while:
+
+    cmpl $0, %edx
+    jl PrepEndWhile
+
+    movb (%esi,%edx,1), %al
+
+    cmpb %al, key
+    jg PrepEndWhile
+
+    subl base, %edx
+    movl %edx, %eax
+    addl $4, %eax
+    movl (%esi ,%edx,1), %ebx
+    movl %ebx, (%esi ,%eax,1)
+    decl %edx
+
+    cmpl $3, base
+    je while
+
+    decl %edx
+
+    jmp while
+
+PrepEndWhile:
+
+    incl %edx
+
+    cmpl $3, base
+    je endWhile
+
+    incl %edx
+
+endWhile:
+
+    popl %eax
+    movl %eax, (%esi ,%edx, 1)
+
+    addl $4, %ecx
+
+    jmp for
+
+endFor:
+
+    ret
+    \end{lstlisting}
+    
+    \item Bubble sort \texttt{equalSort.s}:
+    
+    \begin{lstlisting}[firstnumber=130]
+      .section .data
+
+base: .byte 0               # EDF or HPF
+flag: .byte 0               # 1 -> swap 0 -> no swap
+
+.section .text
+    .global EqualSort
+    .type EqualSort, @function
+
+EqualSort:
+
+    pushl %ebp              
+    movl %esp, %ebp
+ 
+    movl 8(%ebp), %edi      #len
+    movl 12(%ebp), %esi     #pointer
+    movl 16(%ebp), %ecx     #Base
+
+    popl %ebp               #restore stack
+
+    movb %cl, base          #salvo base (EDF or HPF)
+    movl %ecx, %eax         # i
+    movl %eax, %ebx         # j
+    addl $4, %ebx           # j + 1
+
+loop:
+
+    cmpl %eax, %edi         #len <= i (uscita)
+    jle endLoop
+
+    xorl %ecx, %ecx
+    xorl %edx, %edx
+
+    movb (%esi, %eax, 1), %cl   
+    movb (%esi, %ebx, 1), %dl
+
+    cmpb %cl, %dl               #confronto i e j
+    je Check                    #se sono uguali vado a check
+
+    jmp next
+
+Check:
+
+    cmpb $3, base               #se base = HPF (priorità) -> decrement
+    je decrement
+
+increment:                      # guardo priorità
+
+    incl %eax                   #incremento i
+    incl %ebx                   #incremento j
+
+    movb (%esi, %eax, 1), %cl       # preparo il confronto dei prossimi valori
+    movb (%esi, %ebx, 1), %dl
+
+
+    subl $3, %eax           # torno a puntare l'inizio dell'elemento
+    subl $3, %ebx           # =
+
+    cmpb %cl, %dl           # confronto i e j
+    jl reset                
+    je SetDurata
+
+    movl (%esi, %eax, 1), %ecx
+    movl (%esi, %ebx, 1), %edx
+
+    movl %ecx, (%esi, %ebx, 1)
+    movl %edx, (%esi, %eax, 1)
+
+    movb $1, flag
+
+    jmp reset
+
+decrement:                  # guardo scadenza
+
+    decl %eax
+    decl %ebx
+
+    movb (%esi, %eax, 1), %cl
+    movb (%esi, %ebx, 1), %dl
+
+
+    subl $2, %eax
+    subl $2, %ebx
+
+    cmpb %dl, %cl
+    jg reset
+    je SetDurata
+
+    movl (%esi, %eax, 1), %ecx
+    movl (%esi, %ebx, 1), %edx
+
+    movl %ecx, (%esi, %ebx, 1)
+    movl %edx, (%esi, %eax, 1)
+
+    movb $1, flag
+
+    jmp reset
+
+SetDurata:        # se scadenza uguale priorità uguali, controllo la durata
+
+    addl $1, %eax    # incremento così vado da ID a durata
+    addl $1, %ebx
+
+Durata:
+
+    movb (%esi, %eax, 1), %cl
+    movb (%esi, %ebx, 1), %dl
+
+
+    subl $1, %eax
+    subl $1, %ebx
+
+    cmpb %cl, %dl
+    jge reset
+    
+    movl (%esi, %eax, 1), %ecx
+    movl (%esi, %ebx, 1), %edx
+
+    movl %ecx, (%esi, %ebx, 1)
+    movl %edx, (%esi, %eax, 1)
+
+    movb $1, flag
+
+reset:
+
+    addb base, %al     # resetto base
+    addb base, %bl     # resetto base
+
+next:
+
+    cmpb $1, flag
+    je Redo
+
+    addl $4, %eax
+    addl $4, %ebx
+    jmp loop
+
+Redo:                   # se ho fatto uno swap, ripeto il confronto
+
+    movl $0, flag
+    movl base, %ecx
+    movl %ecx, %eax
+    movl %eax, %ebx
+    addl $4, %ebx
+
+    jmp loop
+
+endLoop:
+    
+    ret
+    
+    \end{lstlisting}
+
+
+    
+    \item Loop scrittura \texttt{FinalData.s}:
+    
+    \begin{lstlisting}[firstnumber=130]
+      .section .data
+
+PenaltyMsgLen: .byte 9
+TimeMsgLen: .byte 13
+
+PenaltyMsg: .string "Penalty: "
+TimeMsg: .string "Conclusione: "
+
+timeAscii: .byte 4
+penaltyAscii: .byte 6
+
+
+.section .text
+    .globl finalData
+    .type finalData, @function
+
+finalData:
+
+    pushl %ebx #salvo la penalita'
+    pushl %eax #salvo il tempo
+    addl %edx, %edi # aggiungo la lunghezza del buffer all'inizio del buffer per avere il primo spazio libero
+    xorl %ecx, %ecx #per sicurezza azzero ecx
+
+    movl $TimeMsg, %esi
+    movb TimeMsgLen, %cl
+    cld                                 
+    LoopTime:                #ctrl c e ctrl v
+        lodsb
+        stosb
+        loop LoopTime
+
+
+getTime:  #Tempo in numeri in %ebx e dove scrivere in %edi
+
+    popl %eax #Riprendo dalla stack il tempo
+    movl $10, %ebx     
+    leal timeAscii+3, %esi    #un semplicissimo btoa che trasforma il tempo in ascii 
+    movl $10, (%esi)
+
+loopTime:
+
+    xorl %edx, %edx
+    divl %ebx               # divido per prendere il resto
+
+    addb $48, %dl           #aggiungo 48 per trasformare il numero in ascii
+    decl %esi               #decremento il puntatore che fino a questo punto punta a 10 (vedi sopra)
+    movb %dl, (%esi)       
+
+    test %eax, %eax       
+    jz BufferTime
+
+    jmp loopTime
+
+BufferTime: #copio il buffer in %edi(puntatore al buffer)
+
+    movb (%esi), %al
+    cmpb $10, %al
+    je next
+    movb %al, (%edi)
+
+    incl %edi
+    incl %esi
+
+    jmp BufferTime
+
+next:  #finito il tempo uso il tappo \n
+
+    movb $10, (%edi)
+    incl %edi
+
+    xorl %ecx, %ecx 
+
+    movl $PenaltyMsg, %esi
+    movb PenaltyMsgLen, %cl
+    cld                                # ctrl c e ctrl v
+    LoopPenalty:
+        lodsb
+        stosb
+        loop LoopPenalty
+
+getPenalty: 
+
+    popl %eax #Riprendo dalla stack la penalita'
+    movl $10, %ebx     
+    leal penaltyAscii+5, %esi 
+    movl $10, (%esi)
+
+loopPenalty:
+
+    xorl %edx, %edx
+    divl %ebx
+
+    addb $48, %dl
+    decl %esi
+    movb %dl, (%esi) #stessa cosa di sopra ma per la penalita'
+
+    test %eax, %eax
+    jz BufferPenalty
+
+    jmp loopPenalty
+
+BufferPenalty:
+
+    movb (%esi), %al
+    cmpb $10, %al
+    je end
+    movb %al, (%edi)
+
+    incl %edi
+    incl %esi
+
+    jmp BufferPenalty
+
+end:
+
+    movb %al, (%edi)      #aggiungo \n
+    
+    ret
+
+    \end{lstlisting}
+    
+
+  \end{itemize}
+
 \subsubsection{In allegato si troveranno i seguenti dataset per testare il programma:}
 \begin{itemize}
   \item \texttt{Makefile}: file per la compilazione del programma;
@@ -264,8 +673,8 @@ Se un prodotto non viene completato entro la scadenza, il programma calcola la p
 
       \begin{itemize}
         \item Il software non è in grado di gestire generalmete prodotti con valori maggiori di 256;
-        \item Il software non è in grado di gestire file di input con più di 256 slot temporali;
         \item Il software non è in grado di gestire file di input aventi dimensione maggiore di 1024 Byte.
+        \item Il software non è in grado di gestire file di output aventi dimensione maggiore di 1024 Byte.
       \end{itemize}
 
 
