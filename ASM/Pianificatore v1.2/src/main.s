@@ -1,7 +1,7 @@
 .section .data
 
 # ------------------ VARIABILI GLOBALI -------------------------- #
-time: .byte 0
+time: .int 0
 penalty: .int 0
 InputFile: .int 0
 OutputFile: .int 0
