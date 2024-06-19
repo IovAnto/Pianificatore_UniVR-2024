@@ -58,7 +58,7 @@
     captionpos=b,
     breaklines=true,
     breakatwhitespace=true,
-    basicstyle=\ttfamily\small,
+    basicstyle=\ttfamily\fontsize{8pt}{10pt}\selectfont, % Set the basic code style to a smaller font
   keywordstyle=\bfseries\color{blue},  % Stile per i comandi (mov, movb, ...)
   morekeywords={movl, movb, jmp, call},  % Aggiunta dei comandi principali
   commentstyle=\color{mygreen},  % Stile per i commenti
@@ -541,23 +541,23 @@ finalData:
 
     movl $TimeMsg, %esi
     movb TimeMsgLen, %cl
-    cld                                 
-    LoopTime:                #ctrl c e ctrl v
-        lodsb
-        stosb
-        loop LoopTime
+    cld                      # flag reset direction
+    LoopTime:                # ctrl c e ctrl v
+        lodsb                # carica byte da %esi ad %al
+        stosb                # scrive byte da %al a %edi
+        loop LoopTime        # decrementa %cl e se non è zero salta a LoopTime
 
 
-getTime:  #Tempo in numeri in %ebx e dove scrivere in %edi
+getTime:        # Tempo in numeri in %ebx e dove scrivere in %edi
 
-    popl %eax #Riprendo dalla stack il tempo
+    popl %eax   # Riprendo dalla stack il tempo
     movl $10, %ebx     
     leal timeAscii+3, %esi    #un semplicissimo btoa che trasforma il tempo in ascii 
     movl $10, (%esi)
 
-loopTime:
+loopTime_B:
 
-    xorl %edx, %edx
+    xorl %edx, %edx         # pulisco edx
     divl %ebx               # divido per prendere il resto
 
     addb $48, %dl           #aggiungo 48 per trasformare il numero in ascii
@@ -567,16 +567,16 @@ loopTime:
     test %eax, %eax       
     jz BufferTime
 
-    jmp loopTime
+    jmp loopTime_B
 
-BufferTime: #copio il buffer in %edi(puntatore al buffer)
+BufferTime: # copio il buffer in %edi(puntatore al buffer)
 
     movb (%esi), %al
     cmpb $10, %al
     je next
     movb %al, (%edi)
 
-    incl %edi
+    incl %edi   
     incl %esi
 
     jmp BufferTime
@@ -598,7 +598,7 @@ next:  #finito il tempo uso il tappo \n
 
 getPenalty: 
 
-    popl %eax #Riprendo dalla stack la penalita'
+    popl %eax # Riprendo dalla stack la penalita'
     movl $10, %ebx     
     leal penaltyAscii+5, %esi 
     movl $10, (%esi)
@@ -610,10 +610,10 @@ loopPenalty:
 
     addb $48, %dl
     decl %esi
-    movb %dl, (%esi) #stessa cosa di sopra ma per la penalita'
+    movb %dl, (%esi)    # 'time loop' ma per la penalita'
 
-    test %eax, %eax
-    jz BufferPenalty
+    test %eax, %eax     # se è 0 esco
+    jz BufferPenalty    # altrimenti continuo
 
     jmp loopPenalty
 
