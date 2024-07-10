@@ -34,22 +34,22 @@ Penalità: 0
 
 
 ## Calcolo delle Penalità
-Le penalità sono calcolate utilizzando la formula:
+Le penalità sono calcolate utilizzando la formula: \n
 Penalità = Ritardo * Priorità
 
 
 ## Struttura della Directory del Progetto
-VRXXXXXX_VRXXXXXX
-├── src/
-├── obj/ (vuota)
-├── bin/ (vuota)
-├── Makefile
-├── Ordini/
-│ ├── EDF.txt
-│ ├── HPF.txt
-│ ├── Both.txt
-│ └── None.txt
-└── Relazione.pdf
+VRXXXXXX_VRXXXXXX \n
+├── src/ \n
+├── obj/ (vuota) \n
+├── bin/ (vuota) \n
+├── Makefile \n
+├── Ordini/ \n
+│ ├── EDF.txt \n
+│ ├── HPF.txt \n
+│ ├── Both.txt \n
+│ └── None.txt \n
+└── Relazione.pdf \n
 
 
 ## Lista delle Cose da Fare (TODO)
