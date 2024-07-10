@@ -36,17 +36,17 @@ Penalty: 0
 
 ## Struttura del Progetto
 
-VRXXXXXX_VRXXXXXX/
-├── src/
-├── obj/ (vuota)
-├── bin/ (vuota)
-├── Makefile
-├── Ordini/
-│   ├── EDF.txt
-│   ├── HPF.txt
-│   ├── Both.txt
-│   └── None.txt
-└── Relazione.pdf
+VRXXXXXX_VRXXXXXX/ 
+├── src/ 
+├── obj/ (vuota) 
+├── bin/ (vuota) 
+├── Makefile 
+├── Ordini/ 
+│   ├── EDF.txtv
+│   ├── HPF.txt 
+│   ├── Both.txt 
+│   └── None.txt 
+└── Relazione.pdf 
 
 ## TODO
 
@@ -58,9 +58,9 @@ VRXXXXXX_VRXXXXXX/
 - [X] Definizione algoritmo di sorting
 - [X] Scrittura dei test
 - [X] Stesura del file ASM
-- [X] Testing (GPT?)
+- [X] Testing
 - [X] V1
-- [X] GUI
+- [X] GUI (rudimentale)
 - [ ] Controllo file pre lancio
 - [ ] Risoluzione bug del tempo
 
@@ -68,6 +68,6 @@ VRXXXXXX_VRXXXXXX/
 
 Questo progetto è distribuito sotto la licenza Creative Commons Attribution 4.0. Per ulteriori dettagli, vedere [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-## Crediti
+### Crediti
 
-Progetto sviluppato da Tommi Bimbato e Antonio Iovine.
+Progetto sviluppato da Antonio Iovine e Tommi Bimbato.
