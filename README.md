@@ -33,9 +33,6 @@ Start → Selezione dell’algoritmo di ordinamento (EDF/HPF) → Stampa a video
 Conclusione: 17
 Penalty: 0
 
-### Task
-
-- Calcolare la penalità: `Ritardo * Priorità = X$`
 
 ## Struttura del Progetto
 
