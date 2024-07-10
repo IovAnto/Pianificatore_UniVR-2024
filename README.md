@@ -67,5 +67,5 @@ TODO
 - [X] Testing (GPT?)
 - [X] V1
 - [X] GUI
-- [ ] Controllo file pre lancio
-- [ ] Risoluzione bug del tempo
+- [-] Controllo file pre lancio
+- [-] Risoluzione bug del tempo
