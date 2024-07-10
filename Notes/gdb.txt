@@ -1,0 +1,20 @@
+
+	Vedere variabili e heap in generale (x/(t) (nome var))
+	
+	typeing (t)
+	
+	/b into byte
+	/w into word
+	/d into decimal
+	/l into trace (32bit)
+	
+	Stack Sniper
+	
+	x/10dw $esp -> fa vedere tutti i blocchi di memoria adiacenti allo esp quindi fa vedere la stack completa (10 elementi)
+	
+	info (v) fa vedere in generale info utili
+	
+	r registri
+	s stack (solo funzioni)
+	...
+	

@@ -1,0 +1,11 @@
+btoa.s
+mette in buffer un oggetto elaborato (id:tempo attuale) con fine \n
+
+quindi ci sarà un  array del tipi (parte standard di scrittura file) id:tempo\nid:tempo1\n... e cosi via,
+
+in fondo vi andara (altra funzione) conclusione e penalità
+
+
+main.s
+da rimodellare la funzione di scrittura in uscità (file no file) nel caso di no file chidere a runtime (sia chiusura sia apertura?) 
+non funziona l'apertura file finale(da rivedere stack in out)

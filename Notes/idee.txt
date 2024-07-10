@@ -1,0 +1,3 @@
+fare il sorting con i puntatori 
+storare i puntatori in oridine sulla stack(?)
+usare sal e sar per dividere i registri da 32 in 4 da 8 
