@@ -39,7 +39,7 @@ Penalità = Ritardo * Priorità
 
 
 ## Struttura della Directory del Progetto
-VRXXXXXX_VRXXXXXX/
+VRXXXXXX_VRXXXXXX
 ├── src/
 ├── obj/ (vuota)
 ├── bin/ (vuota)
