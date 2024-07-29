@@ -39,17 +39,17 @@ Penalità = Ritardo * Priorità
 
 
 ## Struttura della Directory del Progetto
-VRXXXXXX_VRXXXXXX \n
-├── src/ \n
-├── obj/ (vuota) \n
-├── bin/ (vuota) \n
-├── Makefile \n
-├── Ordini/ \n
-│ ├── EDF.txt \n
-│ ├── HPF.txt \n
-│ ├── Both.txt \n
-│ └── None.txt \n
-└── Relazione.pdf \n
+VRXXXXXX_VRXXXXXX                                                               
+├── src/                                                                        
+├── obj/ (vuota)                                                                
+├── bin/ (vuota)                                                                
+├── Makefile                                                                    
+├── Ordini/                                                                     
+│ ├── EDF.txt                                                                   
+│ ├── HPF.txt                                                                   
+│ ├── Both.txt                                                                  
+│ └── None.txt                                                                  
+└── Relazione.pdf                                                               
 
 
 ## Lista delle Cose da Fare (TODO)
