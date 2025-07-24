@@ -71,5 +71,3 @@ VRXXXXXX_VRXXXXXX
 
 ---
 
-Questo file README fornisce una panoramica completa e professionale del progetto per lo sviluppo di un'applicazione software di pianificazione della produzione.
-
