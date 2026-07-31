@@ -1,73 +1,59 @@
-# Software di Pianificazione della Produzione
+# Pianificatore della produzione
 
-## Abstract
-Questo progetto prevede lo sviluppo di un software per gestire la pianificazione di 127 prodotti differenti, ciascuno con caratteristiche uniche, su 100 slot temporali consecutivi dopo il lancio dell'applicativo. La pianificazione verrà gestita utilizzando due specifici algoritmi di ordinamento: **Earliest Deadline First (EDF)** e **Highest Priority First (HPF)**.
+Elaborato del corso di Architettura degli Elaboratori, Università di Verona, 2024.
 
-## Obiettivi
-- **Pianificazione della Produzione**: Allocare la produzione su 100 slot temporali utilizzando gli algoritmi EDF e HPF.
-- **Calcolo delle Penalità**: Calcolare le penalità basate sui ritardi e sulla priorità.
-- **Tempo di Conclusione**: Visualizzare il tempo complessivo di conclusione.
-- **Gestione degli Output**: Salvare i risultati su un file (input da bash).
+Il programma pianifica la produzione di 127 prodotti su 100 slot temporali, con due
+politiche di ordinamento: Earliest Deadline First e Highest Priority First. Per ogni
+pianificazione calcola il tempo di conclusione e la penalità totale. È scritto in
+assembly x86 (sintassi NASM), con una parte di prototipazione in C nella cartella `Notes`.
 
-## Specifiche di Input
-Il software accetta un file di testo in formato CSV con il seguente formato:
+La penalità di un prodotto è `ritardo × priorità`; la penalità complessiva è la loro somma.
 
+## Input
+
+Un file di testo, una riga per prodotto:
+
+```
 ID, Durata, Scadenza, Priorità
-1-127, Numero di slot per produrre 1 unità, Scadenza nella timeline (1-100), Priorità (1-5)
+```
 
-- **ID**: Identificativo unico per ciascun prodotto (1-127).
-- **Durata**: Numero di slot temporali necessari per produrre un'unità.
-- **Scadenza**: Slot temporale entro cui la produzione deve essere completata (1-100).
-- **Priorità**: Livello di urgenza del prodotto (1 = meno urgente, 5 = massima urgenza).
+| Campo | Valori |
+|---|---|
+| ID | 1–127 |
+| Durata | slot necessari a produrre un'unità |
+| Scadenza | slot entro cui concludere, 1–100 |
+| Priorità | 1 (meno urgente) – 5 (massima urgenza) |
 
-## Struttura del Programma
-1. **Avvio**
-2. **Selezione dell'Algoritmo**: Scelta dell'algoritmo di ordinamento (EDF/HPF).
-3. **Visualizzazione Output**: Stampa dei risultati a video.
+In `ASM/Datasets` ci sono i dataset di prova, più `datasetmaker.py` per generarne altri.
 
-## Esempio di Output
-Per la pianificazione EDF:
+## Output
+
+```
 4:0
 12:10
 Conclusione: 17
 Penalità: 0
+```
 
+Ogni riga è `ID:slot di inizio`. Le ultime due righe danno il tempo di conclusione e la
+penalità della pianificazione.
 
-## Calcolo delle Penalità
-Le penalità sono calcolate utilizzando la formula: \n
-Penalità = Ritardo * Priorità
+## Struttura
 
+```
+ASM/
+├── Pianificatore v1.2/     sorgenti, Makefile e ordini generati
+└── Datasets/               dataset di prova e generatore
+Notes/                      prototipi in C, appunti su gdb e salti condizionali
+Relazione/                  relazione in LaTeX, con i sorgenti e il PDF
+```
 
-## Struttura della Directory del Progetto
-VRXXXXXX_VRXXXXXX                                                               
-├── src/                                                                        
-├── obj/ (vuota)                                                                
-├── bin/ (vuota)                                                                
-├── Makefile                                                                    
-├── Ordini/                                                                     
-│ ├── EDF.txt                                                                   
-│ ├── HPF.txt                                                                   
-│ ├── Both.txt                                                                  
-│ └── None.txt                                                                  
-└── Relazione.pdf                                                               
+## Stato
 
+L'ordinamento, il calcolo delle penalità, i test e l'interfaccia sono completi. Restano
+aperti il controllo di validità del file prima dell'avvio e un bug sul calcolo dei tempi
+con i dataset lunghi (`ASM/Datasets/05_BUG_LONG`).
 
-## Lista delle Cose da Fare (TODO)
-### Completato
-- [X] C → In lavorazione
-- [X] Scheletro ASM
-- [X] Definizione dei Registri
-  - [X] Numero di parole per informazione
-  - [X] Numero di registri necessari
-- [X] Definizione dell'Algoritmo di Ordinamento
-- [X] Scrittura dei Test
-- [X] Scrittura del File ASM
-- [X] Versione Iniziale (V1)
-- [X] Interfaccia Grafica (GUI)
+## Autori
 
-### In sospeso
-- [ ] Controllo del File prima del lancio
-- [ ] Risoluzione dei Bug relativi al Tempo
-
----
-
+Antonio Iovine e Tommi Bimbato.
